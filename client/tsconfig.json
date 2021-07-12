@@ -9,6 +9,6 @@
 		"incremental": true    
 	},
 	"files": [
-		"Client.ts"
+		"Client.ts", "./GameObjectInstantiator.ts"
 	]
 }
