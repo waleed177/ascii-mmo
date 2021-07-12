@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"target": "es6",                                
+		"outDir": "../dist/public",          
+		"noImplicitAny": true,  
+		"esModuleInterop": true,                       
+		"skipLibCheck": true,                          
+		"forceConsistentCasingInFileNames": true,
+		"incremental": true    
+	},
+	"files": [
+		"Client.ts", "./settingPositionData.ts", "./shared/prefabs.ts"
+	]
+}
