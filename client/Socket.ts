@@ -43,7 +43,6 @@ export class Socket {
 
     private onSocketMessage(ev: MessageEvent<string>) {
         var data: ReceivedData = JSON.parse(ev.data);
-        console.log(data);
         this.functionBindings.get(data.type)(data.json);
     }
 }

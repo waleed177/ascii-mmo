@@ -17,7 +17,7 @@ export class NetworkWorld extends World {
         this.socket = socket;
 
         socket.on("emitForGameObject", (data: EmitForGameObjectData) => {
-            this.children.get(data.id).messageHandler.handle(data.json);
+            this.children.get(data.id).messageHandler.handle(socket, data.json);
         });
 
         socket.on("spawnGameObject", (data: SpawnGameObjectData) => {

@@ -1,19 +1,21 @@
 import {ReceivedData} from './ReceivedData.js'
 
-export class MessageHandler {
-    private functionBindings: Map<string, (data: object) => void>;
+type MessageHandlerFunction<T> = (sender: T, data: object) => void;
+
+export class MessageHandler<T> {
+    private functionBindings: Map<string, MessageHandlerFunction<T>>;
 
     constructor() {
-        this.functionBindings = new Map<string, (data: object) => void>();
+        this.functionBindings = new Map<string, MessageHandlerFunction<T>>();
     }
 
-    public on(type: string, callback: (data: object) => void) {
+    public on(type: string, callback: MessageHandlerFunction<T>) {
         this.functionBindings.set(type, callback);
     }
 
-    public handle(data: ReceivedData) {
+    public handle(sender: T, data: ReceivedData) {
         if(this.functionBindings.has(data.type))
-            this.functionBindings.get(data.type)(data.json);
+            this.functionBindings.get(data.type)(sender, data.json);
         else
             console.error("Function binding " + data.type + " does not exist!");
     }

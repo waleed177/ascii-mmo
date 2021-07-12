@@ -15,7 +15,7 @@ interface TestType {
 export class ClientHandler {
     
     private webSockets: ws;
-    private messageHandler: MessageHandler;
+    private messageHandler: MessageHandler<ClientHandler>;
     private server: Server;
     player = new NetworkPlayer();
 
@@ -30,7 +30,7 @@ export class ClientHandler {
     }
 
     public initPlayerEntity() {
-        this.player.position = new Vector2(10, 10);
+        this.player.position = new Vector2(11, 11);
         this.server.world.sendWorldTo(this);
         this.server.world.addChild(this.player);
         this.emit('receiveLocalPlayerId', {
@@ -41,16 +41,16 @@ export class ClientHandler {
     initializeEvents() {
         this.webSockets.on("message", (data) => {
             var json_data: ReceivedData = JSON.parse(data.toString());
-            this.messageHandler.handle(json_data);
+            this.messageHandler.handle(this, json_data);
         });
 
-        this.messageHandler.on("test", (data: TestType) => {
+        this.messageHandler.on("test", (sender: ClientHandler, data: TestType) => {
             console.log(data.test1);
             console.log(data.test2);
         });
 
-        this.messageHandler.on("emitForGameObject", (data: EmitForGameObjectData) => {
-            this.server.world.getChild(data.id).messageHandler.handle(data.json);
+        this.messageHandler.on("emitForGameObject", (sender: ClientHandler, data: EmitForGameObjectData) => {
+            this.server.world.getChild(data.id).messageHandler.handle(this, data.json);
         });
     }
 

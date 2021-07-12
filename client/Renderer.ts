@@ -29,13 +29,19 @@ export class Renderer {
     }
 
     public inBounds(x: number, y: number) {
-        return 0 < x && x < this.width && 0 < y && y < this.height;
+        return 0 <= x && x < this.width && 0 <= y && y < this.height;
     }
 
     public fillTiles(xFrom: number, yFrom: number, xTo: number, yTo: number, char: string) {
-        for(let x = xFrom; x < xTo; x++)
-            for(let y = yFrom; y < yTo; y++)
+        for(let x = xFrom; x <= xTo; x++)
+            for(let y = yFrom; y <= yTo; y++)
                 this.setTile(x, y, char);
+    }
+
+    public writeText(x: number, y: number, str: string) {
+        for(let i = 0; i < str.length; i++) {
+            this.setTile(x + i, y, str[i]);
+        }
     }
 
     public setTile(x: number, y: number, char: string) {

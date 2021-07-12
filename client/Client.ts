@@ -2,6 +2,7 @@ import { Keyboard } from "./Keyboard.js";
 import {Renderer} from "./Renderer.js";
 import { Socket } from "./Socket.js";
 import { NetworkWorld } from "./NetworkWorld.js";
+import { ChatBox } from "./ChatBox.js";
 
 let canvas = document.getElementById("game") as HTMLCanvasElement;
 let context = canvas.getContext('2d');
@@ -20,10 +21,16 @@ socket.emit("test", {
     test2: 200
 });
 
+var chatBox = new ChatBox();
+world.addChild(chatBox);
+
 setInterval(() => {
     renderer.clear();
 
+    keyboard.startScope("game");
     world.update();
+    keyboard.endScope();
+
     world.draw();
 
     context.clearRect(0,0, canvas.width, canvas.height);

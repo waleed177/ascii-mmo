@@ -9,6 +9,6 @@
 		"incremental": true    
 	},
 	"files": [
-		"Client.ts", "./settingPositionData.ts", "./shared/prefabs.ts"
+		"Client.ts", "./ChatBox.ts"
 	]
 }

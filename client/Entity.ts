@@ -3,6 +3,7 @@ import { EntityChangedPositionData } from "./shared/EntityChangedPositionData.js
 import { Sprite } from "./shared/Sprite.js";
 import { Vector2 } from "./shared/Vector2.js";
 import { SettingPositionData } from "./shared/SettingPositionData.js";
+import { Socket } from "./Socket.js";
 
 export class Entity extends ClientGameObject {
     public sprite: Sprite;
@@ -11,7 +12,7 @@ export class Entity extends ClientGameObject {
     constructor() {
         super();
         this.position = new Vector2(0, 0);
-        this.messageHandler.on("settingPosition", (data: SettingPositionData) => {
+        this.messageHandler.on("settingPosition", (sender: Socket, data: SettingPositionData) => {
             this.position = new Vector2(data.x, data.y);
         });
     }
