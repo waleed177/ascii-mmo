@@ -9,6 +9,6 @@
 		"incremental": true    
 	},
 	"files": [
-		"Client.ts", "./ChatBox.ts"
+		"Client.ts"
 	]
 }

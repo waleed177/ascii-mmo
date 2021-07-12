@@ -57,7 +57,7 @@ export class Renderer {
         for (let x = 0; x < this.width; x++)
             for (let y = 0; y < this.height; y++) {
                 this.context.fillStyle = "#ff0000";
-                this.context.fillText(this.getTile(x, y), x * 10, y * 10);
+                this.context.fillText(this.getTile(x, y), x * 10, 10 + y * 10);
             }
     }
 }

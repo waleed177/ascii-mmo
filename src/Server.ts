@@ -1,6 +1,7 @@
 import { ClientHandler } from './ClientHandler.js';
 import { app } from './app';
 import { NetworkWorld } from './NetworkWorld';
+import { ChatBox } from './ChatBox.js';
 
 export class Server {
     private clients = new Array<ClientHandler>();
@@ -17,6 +18,8 @@ export class Server {
             this.addClient(clientHandler);
             clientHandler.initPlayerEntity();
         });
+
+        this.world.addChild(new ChatBox());
     }
 
     broadcast(type: string, data: object) {

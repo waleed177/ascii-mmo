@@ -25,10 +25,6 @@ export class Entity extends ClientGameObject {
 
     }
 
-    public init(data: object) {
-        
-    }
-
     protected sendNewPosition() {
         this.emit(
             'settingPosition',

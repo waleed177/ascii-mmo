@@ -21,9 +21,6 @@ socket.emit("test", {
     test2: 200
 });
 
-var chatBox = new ChatBox();
-world.addChild(chatBox);
-
 setInterval(() => {
     renderer.clear();
 

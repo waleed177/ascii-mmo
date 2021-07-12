@@ -8,10 +8,6 @@ export class Player extends Entity {
         this.sprite = new CharSprite(new Vector2(0, 0), 'P');
     }
 
-    init(data: object) {
-
-    }
-
     update() {
         if (this.world.playerId == this.id)
             this.handleMovement();

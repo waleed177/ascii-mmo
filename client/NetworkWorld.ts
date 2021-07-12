@@ -7,6 +7,8 @@ import { SpawnGameObjectData } from "./shared/SpawnGameObjectData.js";
 import { Vector2 } from "./shared/Vector2.js";
 import { World } from "./shared/World.js";
 import { LocalPlayerIdData } from "./shared/LocalPlayerIdData.js";
+import { ChatBox } from "./ChatBox.js";
+import { GameObject } from "./shared/GameObject.js";
 
 export class NetworkWorld extends World {
     public playerId: number;    
@@ -21,15 +23,20 @@ export class NetworkWorld extends World {
         });
 
         socket.on("spawnGameObject", (data: SpawnGameObjectData) => {
-            var child: Entity;
+            var child: GameObject;
             if(data.prefab == "entityCharSprite") {
                 child = new Entity();
             } else if (data.prefab == "player") {
                 child = new Player();
+            } else if(data.prefab == "chatBox") {
+                child = new ChatBox();
             }
+
             child.init(data.data);
-            child.sprite = new CharSprite(new Vector2(0, 0), data.sprite);
-            child.position = new Vector2(data.x, data.y);
+            if(data.prefab == "entityCharSprite" || data.prefab == "player") {
+                (child as Entity).sprite = new CharSprite(new Vector2(0, 0), data.sprite);
+                (child as Entity).position = new Vector2(data.x, data.y);
+            }
             child.id = data.id;
             this.addChild(child);
         });

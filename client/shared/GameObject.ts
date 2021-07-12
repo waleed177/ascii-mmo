@@ -14,4 +14,8 @@ export class GameObject {
     draw() {
 
     }
+
+    public init(data: object) {
+        
+    }
 }

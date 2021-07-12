@@ -1,1 +1,4 @@
-export type PrefabName = "player" | "entityCharSprite";
+export type PrefabName = 
+      "player"
+    | "entityCharSprite"
+    | "chatBox";
