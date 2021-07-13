@@ -1,7 +1,7 @@
 import { CharSprite } from "./CharSprite.js";
 import { Entity } from "./Entity.js";
 import { Vector2 } from "./shared/Vector2.js";
-import { keyboard } from "./Client.js";
+import { keyboard, renderer } from "./Client.js";
 export class Player extends Entity {
     constructor() {
         super();
@@ -9,8 +9,15 @@ export class Player extends Entity {
     }
 
     update() {
-        if (this.world.playerId == this.id)
+        if (this.world.playerId == this.id){
             this.handleMovement();
+            renderer.cameraPosition = this.position.sub(
+                new Vector2(
+                    Math.floor(renderer.width/2),
+                    Math.floor(renderer.height/2)
+                )
+            );
+        }
     }
 
     private handleMovement() {
