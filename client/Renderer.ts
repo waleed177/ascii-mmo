@@ -30,7 +30,7 @@ export class Renderer {
     }
 
     public clear() {
-        this.fillTiles(0, 0, this.width, this.height, ' ');
+        this.fillTilesScreenCoord(0, 0, this.width, this.height, ' ');
     }
 
     private getScreenPosition(vector: Vector2) {
@@ -53,15 +53,32 @@ export class Renderer {
                 this.setTile(x, y, char);
     }
 
+    public fillTilesScreenCoord(xFrom: number, yFrom: number, xTo: number, yTo: number, char: string) {
+        for(let x = xFrom; x <= xTo; x++)
+            for(let y = yFrom; y <= yTo; y++)
+                this.setTileScreenCoord(x, y, char);
+    }
+
     public writeText(x: number, y: number, str: string) {
         for(let i = 0; i < str.length; i++) {
             this.setTile(x + i, y, str[i]);
         }
     }
 
+    public writeTextScreenCoord(x: number, y: number, str: string) {
+        for(let i = 0; i < str.length; i++) {
+            this.setTileScreenCoord(x + i, y, str[i]);
+        }
+    }
+
     public setTile(x: number, y: number, char: string) {
         if(this.inBounds(x, y))
             this.tilemap[x - this.cameraPosition.x][y - this.cameraPosition.y] = char;
+    }
+
+    public setTileScreenCoord(x: number, y: number, char: string) {
+        if(this.inScreenBounds(x, y))
+            this.tilemap[x][y] = char;
     }
 
     public getTile(x: number, y: number) {
