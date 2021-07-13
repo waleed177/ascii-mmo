@@ -1,6 +1,7 @@
 import { SpawnGameObjectData } from '../client/shared/SpawnGameObjectData';
 import { World } from '../client/shared/World';
 import { ClientHandler } from './ClientHandler';
+import { RemoveGameObjectData } from '../client/shared/RemoveGameObjectData';
 import { Server } from './Server';
 import { ServerGameObject } from './ServerGameObject';
 
@@ -18,6 +19,13 @@ export class NetworkWorld extends World {
         gameObject.id = this.getFreeId();
         super.addChild(gameObject);
         this.server.broadcast('spawnGameObject', gameObject.getPublicData());
+    }
+
+    removeChild(gameObject: ServerGameObject) {
+        super.removeChild(gameObject);
+        this.server.broadcast('removeGameObject', {
+            id: gameObject.id
+        } as RemoveGameObjectData);
     }
 
     sendWorldTo(client: ClientHandler) {

@@ -44,6 +44,10 @@ export class ClientHandler {
             this.messageHandler.handle(this, json_data);
         });
 
+        this.webSockets.on('close', (code, reason) => {
+            this.server.world.removeChild(this.player);
+        });
+
         this.messageHandler.on("test", (sender: ClientHandler, data: TestType) => {
             console.log(data.test1);
             console.log(data.test2);

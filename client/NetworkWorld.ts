@@ -7,6 +7,7 @@ import { World } from "./shared/World.js";
 import { LocalPlayerIdData } from "./shared/LocalPlayerIdData.js";
 import { ChatBox } from "./ChatBox.js";
 import { PrefabInstantiator } from "./GameObjectInstantiator.js";
+import { RemoveGameObjectData } from "./shared/RemoveGameObjectData.js";
 
 export class NetworkWorld extends World {
     public playerId: number;    
@@ -27,6 +28,10 @@ export class NetworkWorld extends World {
 
         socket.on("spawnGameObject", (data: SpawnGameObjectData) => {
             this.addChild(this.instantiator.instantiate(data));
+        });
+
+        socket.on("removeGameObject", (data: RemoveGameObjectData) => {
+            this.removeChildById(data.id);
         });
 
         socket.on("receiveLocalPlayerId", (data: LocalPlayerIdData) => {

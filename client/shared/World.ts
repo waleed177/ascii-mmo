@@ -2,11 +2,16 @@ import { GameObject } from "./GameObject.js";
 
 export class World {
     protected children = new Map<number, GameObject>();
+    protected queuedToBeRemovedChildren = new Array<number>();
 
     constructor() {
     }
 
     update() {
+        this.queuedToBeRemovedChildren.forEach((value, index, array) => {
+            this.children.delete(value);
+        });
+
         this.children.forEach((gameObject, key, map) => {
             gameObject.update();
         });
@@ -21,6 +26,18 @@ export class World {
     addChild(gameObject: GameObject) {
         gameObject.world = this;
         this.children.set(gameObject.id, gameObject);
+    }
+
+    removeChild(gameObject: GameObject) {
+        this.children.delete(gameObject.id);
+    }
+
+    removeChildById(id: number) {
+        this.children.delete(id);
+    }
+
+    queueRemoveChild(gameObject: GameObject) {
+        this.queuedToBeRemovedChildren.push(gameObject.id);
     }
 
     getChild(id: number) {
