@@ -8,6 +8,7 @@ import { LocalPlayerIdData } from "./shared/LocalPlayerIdData.js";
 import { ChatBox } from "./ChatBox.js";
 import { PrefabInstantiator } from "./GameObjectInstantiator.js";
 import { RemoveGameObjectData } from "./shared/RemoveGameObjectData.js";
+import { Inventory } from './Inventory.js';
 
 export class NetworkWorld extends World {
     public playerId: number;    
@@ -21,6 +22,7 @@ export class NetworkWorld extends World {
         this.instantiator.bind("entityCharSprite", Entity);
         this.instantiator.bind("player", Player);
         this.instantiator.bind("chatBox", ChatBox);
+        this.instantiator.bind("inventory", Inventory);
 
         socket.on("emitForGameObject", (data: EmitForGameObjectData) => {
             this.children.get(data.id).messageHandler.handle(socket, data.json);

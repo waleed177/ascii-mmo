@@ -20,8 +20,18 @@ export class ServerGameObject extends GameObject {
         }
     }
 
-    emit(type: string, data: object) {
+    emit(type: string, data: any) {
         this.world.server.broadcast('emitForGameObject', {
+            id: this.id,
+            json: {
+                type: type,
+                json: data
+            }
+        } as EmitForGameObjectData);
+    }
+
+    emitTo(client: ClientHandler, type: string, data: any) {
+        client.emit('emitForGameObject', {
             id: this.id,
             json: {
                 type: type,

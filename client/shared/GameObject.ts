@@ -15,7 +15,11 @@ export class GameObject {
 
     }
 
-    public init(data: object) {
+    public init(data: any) {
         
+    }
+
+    public ready() {
+
     }
 }

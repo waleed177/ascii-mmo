@@ -25,6 +25,7 @@ export class World {
 
     addChild(gameObject: GameObject) {
         gameObject.world = this;
+        gameObject.ready();
         this.children.set(gameObject.id, gameObject);
     }
 

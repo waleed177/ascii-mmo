@@ -7,6 +7,8 @@ import { Server } from './Server.js';
 import { NetworkPlayer } from './NetworkPlayer.js';
 import { Vector2 } from '../client/shared/Vector2';
 import { EmitForGameObjectData } from '../client/shared/EmitForGameObjectData.js'
+import { InventoryUpdatedData } from '../client/shared/InventoryUpdatedData';
+
 interface TestType {
     test1: number,
     test2: number
@@ -17,15 +19,17 @@ export class ClientHandler {
     private webSockets: ws;
     private messageHandler: MessageHandler<ClientHandler>;
     private server: Server;
-    player = new NetworkPlayer();
+    player = new NetworkPlayer(this);
 
     constructor(server: Server, webSockets: ws) {
         this.server = server;
         this.webSockets = webSockets;
         this.messageHandler = new MessageHandler();
 
-        console.log("New client connected!");
+        console.log("New client connected!");        
+    }
 
+    setup() {
         
     }
 
@@ -36,6 +40,7 @@ export class ClientHandler {
         this.emit('receiveLocalPlayerId', {
             id: this.player.id
         } as LocalPlayerIdData);
+        this.setup();
     }
 
     initializeEvents() {

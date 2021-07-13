@@ -22,9 +22,8 @@ export class ChatBox extends ClientGameObject {
 
     constructor() {
         super();
-        window.addEventListener("keydown", (ev: KeyboardEvent) => {
-            
-            if(ev.key == ":") {
+        keyboard.addKeyDownListener("chatbox", (ev) => {    
+            if(ev.key == ">") {
                 this.typingMode = !this.typingMode;
             } else if (this.typingMode) {
                 if(ev.key == "Backspace") {

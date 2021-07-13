@@ -1,6 +1,6 @@
 import {ReceivedData} from './ReceivedData.js'
 
-type MessageHandlerFunction<T> = (sender: T, data: object) => void;
+type MessageHandlerFunction<T> = (sender: T, data: any) => void;
 
 export class MessageHandler<T> {
     private functionBindings: Map<string, MessageHandlerFunction<T>>;
