@@ -98,7 +98,7 @@ export class Renderer {
     public render() {
         for (let x = 0; x < this.width; x++)
             for (let y = 0; y < this.height; y++) {
-                this.context.fillStyle = "#ff0000";
+                this.context.fillStyle = "#ffffff";
                 this.context.fillText(this.getTileScreenCoord(x, y), x * this.tileWidth, this.tileHeight * (y+1));
             }
     }
