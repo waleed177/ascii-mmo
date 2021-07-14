@@ -50,7 +50,7 @@ export class ChatBox extends ClientGameObject {
         
     }
 
-    draw() {
+    guiDraw() {
         renderer.fillTilesScreenCoord(0, 0, this.size.x, this.size.y, '-');
 
         let messageOffset = Math.max(this.messages.length-10, 0);

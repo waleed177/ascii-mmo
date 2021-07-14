@@ -44,7 +44,7 @@ export class Inventory extends ClientGameObject {
         });
     }
 
-    draw() {
+    guiDraw() {
         for(let i = 0; i < this.items.length; i++) {
             renderer.writeTextScreenCoord(
                 0, renderer.height-i-1, 

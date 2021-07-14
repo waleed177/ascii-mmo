@@ -23,6 +23,12 @@ export class World {
         });
     }
 
+    guiDraw() {
+        this.children.forEach((gameObject, key, map) => {
+            gameObject.guiDraw();
+        });
+    }
+
     addChild(gameObject: GameObject) {
         gameObject.world = this;
         gameObject.ready();

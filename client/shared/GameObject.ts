@@ -15,6 +15,10 @@ export class GameObject {
 
     }
 
+    guiDraw() {
+        
+    }
+
     public init(data: any) {
         
     }
