@@ -42,6 +42,7 @@ export class Inventory {
         this.clientHandler.player.world.server.tilemap.tilemap.setTile(
             playerPos.x,
             playerPos.y,
+            0,
             id + ""
         );
         this.clientHandler.player.world.server.tilemap.commitChanges();

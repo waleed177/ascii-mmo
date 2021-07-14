@@ -1,20 +1,21 @@
 import { CharSprite } from "./CharSprite.js";
 import { Entity } from "./Entity.js";
-import { Vector2 } from "./shared/Vector2.js";
+import { Vector3 } from "./shared/Vector3.js";
 import { keyboard, renderer } from "./Client.js";
 export class Player extends Entity {
     constructor() {
         super();
-        this.sprite = new CharSprite(new Vector2(0, 0), 'P');
+        this.sprite = new CharSprite(new Vector3(0, 0, 0), 'P');
     }
 
     update() {
         if (this.world.playerId == this.id){
             this.handleMovement();
             renderer.cameraPosition = this.position.sub(
-                new Vector2(
+                new Vector3(
                     Math.floor(renderer.width/2),
-                    Math.floor(renderer.height/2)
+                    Math.floor(renderer.height/2),
+                    0
                 )
             );
         }

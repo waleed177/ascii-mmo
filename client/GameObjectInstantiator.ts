@@ -1,7 +1,7 @@
 import { CharSprite } from "./CharSprite.js";
 import { Entity } from "./Entity.js";
 import { SpawnGameObjectData } from "./shared/SpawnGameObjectData.js";
-import { Vector2 } from "./shared/Vector2.js";
+import { Vector3 } from "./shared/Vector3.js";
 import { GameObject } from "./shared/GameObject.js";
 import { PrefabName } from "./shared/Prefabs.js";
 
@@ -19,8 +19,8 @@ export class PrefabInstantiator {
         let res = new (this.prefabs.get(data.prefab))();
         res.init(data.data);
         if (res instanceof Entity) {
-            (res as Entity).sprite = new CharSprite(new Vector2(0, 0), data.sprite);
-            (res as Entity).position = new Vector2(data.x, data.y);
+            (res as Entity).sprite = new CharSprite(new Vector3(0, 0, 0), data.sprite);
+            (res as Entity).position = new Vector3(data.x, data.y, data.z);
         }
         res.id = data.id;
         return res;

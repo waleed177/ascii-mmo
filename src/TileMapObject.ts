@@ -6,9 +6,9 @@ import { RecieveTileMapData } from '../client/shared/RecieveTileMapData';
 export class TileMapObject extends ServerGameObject {
     public tilemap: TileMap;
 
-    constructor(width: number, height: number) {
+    constructor(width: number, height: number, depth: number) {
         super();
-        this.tilemap = new TileMap(width, height);
+        this.tilemap = new TileMap(width, height, depth);
     }
 
     getPublicData(): SpawnGameObjectData {
@@ -17,11 +17,13 @@ export class TileMapObject extends ServerGameObject {
             sprite: " ",
             x: 0,
             y: 0,
+            z: 0,
             prefab: "tileMap",
             data: {
                 tilemap: this.tilemap.tilemap,
                 width: this.tilemap.width,
-                height: this.tilemap.height
+                height: this.tilemap.height,
+                depth: this.tilemap.depth
             } as RecieveTileMapData
         };
     }
@@ -30,7 +32,8 @@ export class TileMapObject extends ServerGameObject {
         this.emit("map", {
             tilemap: this.tilemap.tilemap,
             width: this.tilemap.width,
-            height: this.tilemap.height
+            height: this.tilemap.height,
+            depth: this.tilemap.depth
         } as RecieveTileMapData);
     }
 }

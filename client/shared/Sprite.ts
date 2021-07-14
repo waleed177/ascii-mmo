@@ -1,11 +1,11 @@
-import { Vector2 } from "./Vector2.js";
+import { Vector3 } from "./Vector3.js";
 
 export abstract class Sprite {
-    public position: Vector2;
+    public position: Vector3;
 
-    constructor(position: Vector2) {
+    constructor(position: Vector3) {
         this.position = position;
     }
 
-    abstract draw(position: Vector2): void;
+    abstract draw(position: Vector3): void;
 }

@@ -23,6 +23,7 @@ export class InventoryDisplay extends ServerGameObject {
             sprite: " ",
             x: 0,
             y: 0,
+            z: 0,
             prefab: "inventory",
             data: {}
         };

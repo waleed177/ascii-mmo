@@ -9,7 +9,7 @@ export class Server {
     private clients = new Array<ClientHandler>();
     public world = new NetworkWorld(this);
     public inventoryDisplay = new InventoryDisplay();
-    public tilemap = new TileMapObject(16, 16);
+    public tilemap = new TileMapObject(16, 16, 1);
 
     addClient(client: ClientHandler) {
         this.clients.push(client);
@@ -27,7 +27,7 @@ export class Server {
         this.world.addChild(this.inventoryDisplay);
         this.world.addChild(this.tilemap);
 
-        this.tilemap.tilemap.writeText(1, 1, 'tomatoes are cool');
+        this.tilemap.tilemap.writeText(1, 1, 0, 'tomatoes are cool');
     }
 
     broadcast(type: string, data: any) {

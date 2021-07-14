@@ -5,6 +5,7 @@ export interface SpawnGameObjectData {
     sprite: string; //temporary
     x: number;
     y: number;
+    z: number;
     prefab: PrefabName;
     data: object;
 }

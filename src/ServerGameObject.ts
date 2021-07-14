@@ -15,6 +15,7 @@ export class ServerGameObject extends GameObject {
             sprite: " ",
             x: -1,
             y: -1,
+            z: -1,
             prefab: "entityCharSprite",
             data: {}
         }

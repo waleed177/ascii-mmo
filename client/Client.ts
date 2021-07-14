@@ -7,7 +7,7 @@ import { ChatBox } from "./ChatBox.js";
 let canvas = document.getElementById("game") as HTMLCanvasElement;
 let context = canvas.getContext('2d');
 
-export let renderer = new Renderer(context, 42, 42);
+export let renderer = new Renderer(context, 42, 42, 1);
 canvas.width = renderer.width * renderer.tileWidth;
 canvas.height = renderer.height * renderer.tileHeight;
 

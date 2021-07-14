@@ -21,6 +21,7 @@ export class ChatBox extends ServerGameObject {
             sprite: " ",
             x: 0,
             y: 0,
+            z: 0,
             prefab: "chatBox",
             data: {}
         };

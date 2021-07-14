@@ -1,10 +1,10 @@
 import { PrefabName } from '../client/shared/Prefabs';
 import { SpawnGameObjectData } from '../client/shared/SpawnGameObjectData';
-import { Vector2 } from '../client/shared/Vector2';
+import { Vector3 } from '../client/shared/Vector3';
 import { ServerGameObject } from './ServerGameObject';
 
 export class NetworkEntity extends ServerGameObject {
-    public position = new Vector2(0, 0);
+    public position = new Vector3(0, 0, 0);
     public sprite: string = ' ';
     public prefab: PrefabName = 'entityCharSprite';
     public data: object = {};
@@ -15,6 +15,7 @@ export class NetworkEntity extends ServerGameObject {
             sprite: this.sprite,
             x: this.position.x,
             y: this.position.y,
+            z: this.position.z,
             prefab: this.prefab,
             data: this.data
         }

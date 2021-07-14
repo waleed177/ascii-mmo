@@ -5,7 +5,7 @@ import { ReceivedData }  from "../client/shared/ReceivedData";
 import { LocalPlayerIdData } from "../client/shared/LocalPlayerIdData";
 import { Server } from './Server.js';
 import { NetworkPlayer } from './NetworkPlayer.js';
-import { Vector2 } from '../client/shared/Vector2';
+import { Vector3 } from '../client/shared/Vector3';
 import { EmitForGameObjectData } from '../client/shared/EmitForGameObjectData.js'
 import { InventoryUpdatedData } from '../client/shared/InventoryUpdatedData';
 
@@ -34,7 +34,7 @@ export class ClientHandler {
     }
 
     public initPlayerEntity() {
-        this.player.position = new Vector2(11, 11);
+        this.player.position = new Vector3(11, 11, 0);
         this.server.world.sendWorldTo(this);
         this.server.world.addChild(this.player);
         this.emit('receiveLocalPlayerId', {

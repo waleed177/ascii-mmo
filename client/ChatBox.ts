@@ -51,15 +51,15 @@ export class ChatBox extends ClientGameObject {
     }
 
     guiDraw() {
-        renderer.fillTilesScreenCoord(0, 0, this.size.x, this.size.y, '-');
+        renderer.fillTilesScreenCoord(0, 0, 0, this.size.x, this.size.y, 0, '-');
 
         let messageOffset = Math.max(this.messages.length-10, 0);
 
         for (let i = 0; i < 10; i++) {
             if(this.messages[messageOffset+i] != null)
-                renderer.writeTextScreenCoord(0, i, this.messages[messageOffset+i]);
+                renderer.writeTextScreenCoord(0, i, 0, this.messages[messageOffset+i]);
         }
 
-        renderer.writeTextScreenCoord(0, this.size.y, "Chat" + (this.typingMode ? "> " : "--") + this.currentSendText);
+        renderer.writeTextScreenCoord(0, this.size.y, 0,  "Chat" + (this.typingMode ? "> " : "--") + this.currentSendText);
     }
 }
