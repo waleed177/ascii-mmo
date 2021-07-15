@@ -75,7 +75,10 @@ export class Renderer {
         }
     }
 
-    public writeTextScreenCoord(x: number, y: number, z: number, str: string) {
+    public writeTextScreenCoord(x: number, y: number, z: number, str: string, centered: boolean = false) {
+        if (centered) {
+            x -= Math.floor(str.length/2);
+        }
         for(let i = 0; i < str.length; i++) {
             this.setTileScreenCoord(x + i, y, z, str[i]);
         }

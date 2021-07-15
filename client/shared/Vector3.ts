@@ -34,4 +34,7 @@ export class Vector3 {
         return new Vector3(this.x / scalar, this.y / scalar, this.z / scalar);
     }
     
+    length() {
+        return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+    }
 }

@@ -3,4 +3,5 @@ export type PrefabName =
     | "entityCharSprite"
     | "chatBox"
     | "inventory"
-    | "tileMap";
+    | "tileMap"
+    | "npc";

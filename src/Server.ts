@@ -4,6 +4,8 @@ import { NetworkWorld } from './NetworkWorld';
 import { ChatBox } from './ChatBox.js';
 import { InventoryDisplay } from './InventoryDisplay.js';
 import { TileMapObject } from './TileMapObject.js';
+import { NPC } from './NPC.js';
+import { Vector3 } from '../client/shared/Vector3.js';
 
 export class Server {
     private clients = new Array<ClientHandler>();
@@ -26,6 +28,10 @@ export class Server {
         this.world.addChild(new ChatBox());
         this.world.addChild(this.inventoryDisplay);
         this.world.addChild(this.tilemap);
+
+        var npc = new NPC();
+        npc.position = new Vector3(11, 13, 0);
+        this.world.addChild(npc);
 
         this.tilemap.tilemap.writeText(1, 1, 0, 'tomatoes are cool');
     }

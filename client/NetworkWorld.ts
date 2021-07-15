@@ -10,6 +10,8 @@ import { PrefabInstantiator } from "./GameObjectInstantiator.js";
 import { RemoveGameObjectData } from "./shared/RemoveGameObjectData.js";
 import { Inventory } from './Inventory.js';
 import { TileMapObject } from "./TileMapObject.js";
+import { NPC } from './NPC.js';
+import { Vector2 } from "./shared/Vector2.js";
 
 export class NetworkWorld extends World {
     public playerId: number;    
@@ -25,6 +27,7 @@ export class NetworkWorld extends World {
         this.instantiator.bind("chatBox", ChatBox);
         this.instantiator.bind("inventory", Inventory);
         this.instantiator.bind("tileMap", TileMapObject);
+        this.instantiator.bind("npc", NPC);
 
         socket.on("emitForGameObject", (data: EmitForGameObjectData) => {
             this.children.get(data.id).messageHandler.handle(socket, data.json);

@@ -1,14 +1,15 @@
 type KeyboardEventFunction = (ev: KeyboardEvent) => void;
 type KeyboardEventFunctionAndData = {
-    scope: string,
+    scope: OwnerType,
     callback: KeyboardEventFunction
 }
+type OwnerType = object | string;
 
 export class Keyboard {
     private keys: Map<string, boolean>;
-    private currentScope: string;
-    private scopeStack: Array<string> = new Array<string>();
-    private keyboardOwner: string;
+    private currentScope: OwnerType;
+    private scopeStack: Array<OwnerType> = new Array<OwnerType>();
+    private keyboardOwner: OwnerType;
     private keyDownListeners = new Array<KeyboardEventFunctionAndData>();
     private keyUpListeners = new Array<KeyboardEventFunctionAndData>();
 
@@ -35,7 +36,7 @@ export class Keyboard {
         });
     }
 
-    public addKeyDownListener(scope: string, callback: KeyboardEventFunction) {
+    public addKeyDownListener(scope: OwnerType, callback: KeyboardEventFunction) {
         this.keyDownListeners.push({
             scope: scope,
             callback: callback
@@ -46,7 +47,7 @@ export class Keyboard {
         return (this.currentScope == this.keyboardOwner || this.keyboardOwner == null) && this.keys.get(key);
     }
 
-    public startScope(name: string) {
+    public startScope(name: OwnerType) {
         if (this.currentScope != null)
             this.scopeStack.push(this.currentScope);
         this.currentScope = name;
@@ -56,12 +57,12 @@ export class Keyboard {
         this.currentScope = this.scopeStack.pop();
     }
 
-    public claimOwnership(name: string) {
+    public claimOwnership(name: OwnerType) {
         if (this.keyboardOwner == null)
             this.keyboardOwner = name;
     }
 
-    public releaseOwnership(name: string) {
+    public releaseOwnership(name: OwnerType) {
         if (this.keyboardOwner == name) 
             this.keyboardOwner = null;
     }
