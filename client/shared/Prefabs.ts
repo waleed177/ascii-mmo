@@ -4,4 +4,5 @@ export type PrefabName =
     | "chatBox"
     | "inventory"
     | "tileMap"
-    | "npc";
+    | "npc"
+    | "questDisplay";

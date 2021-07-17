@@ -2,9 +2,11 @@ import { NetworkEntity } from './NetworkEntity';
 import { SettingPositionData } from '../client/shared/SettingPositionData'
 import { ClientHandler } from './ClientHandler';
 import { Inventory } from './Inventory';
+import { Quests } from './Quests';
 
 export class NetworkPlayer extends NetworkEntity {
     inventory: Inventory;
+    quests: Quests;
     clientHandler: ClientHandler;
 
     constructor(clientHandler: ClientHandler) {
@@ -22,5 +24,6 @@ export class NetworkPlayer extends NetworkEntity {
 
     public ready() {
         this.inventory = new Inventory(this.clientHandler);
+        this.quests = new Quests(this.clientHandler);
     }
 }

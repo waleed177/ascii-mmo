@@ -18,7 +18,7 @@ export class NPC extends NetworkEntity {
 
     ready() {
         this.messageHandler.on("talk", (sender, data) => {
-            sender.dialogueExecutor = new DialogueExecutor(this.dialogue);
+            sender.dialogueExecutor = new DialogueExecutor(sender, this.dialogue);
             this.emitTo(sender, "newDialogue", sender.dialogueExecutor.getCurrentPromptData());
             this.emitTo(sender, "talk", {});
         });

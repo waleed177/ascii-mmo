@@ -29,3 +29,5 @@ export class InventoryDisplay extends ServerGameObject {
         };
     }
 }
+
+

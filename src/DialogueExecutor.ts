@@ -1,12 +1,16 @@
 import { NPCDialogueData } from "../client/shared/NPCDialogueData";
+import { ClientHandler } from "./ClientHandler";
 import { DialogueType } from "./DialogueBuilder";
+import { Quest } from "./Quest";
 
 export class DialogueExecutor {
     private dialogue: DialogueType;
     private currentPromptId: number = 0;
+    private client: ClientHandler;
 
-    constructor(dialogue: DialogueType) {
+    constructor(client: ClientHandler, dialogue: DialogueType) {
         this.dialogue = dialogue;
+        this.client = client;
     }
 
     getCurrentPromptData() : NPCDialogueData {
@@ -34,11 +38,24 @@ export class DialogueExecutor {
         if(currentPrompt == null || currentPrompt.options[id] == null)
             return null;
         if (option.action.startsWith("$")) {
-            switch (option.action) {
+            var sp = option.action.split(' ');
+            var action = sp[0];
+            var remainder = option.action.substr(action.length+1);
+
+            switch (action) {
                 case "$end": {
                     this.currentPromptId = -1;
+                    break;
                 }
-                break;
+                case "$quest_add": {
+                    this.client.player.quests.addQuest(
+                        new Quest(remainder)
+                    );
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
         } else if (option.action.startsWith("L")) {
             var newPromptId = Number.parseInt(option.action.substr(1));

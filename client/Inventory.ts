@@ -52,5 +52,7 @@ export class Inventory extends ClientGameObject {
             );
         }
     }
+
+    
 }
 
