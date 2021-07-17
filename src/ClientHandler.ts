@@ -8,6 +8,7 @@ import { NetworkPlayer } from './NetworkPlayer.js';
 import { Vector3 } from '../client/shared/Vector3';
 import { EmitForGameObjectData } from '../client/shared/EmitForGameObjectData.js'
 import { InventoryUpdatedData } from '../client/shared/InventoryUpdatedData';
+import { DialogueExecutor } from './DialogueExecutor';
 
 interface TestType {
     test1: number,
@@ -20,6 +21,8 @@ export class ClientHandler {
     private messageHandler: MessageHandler<ClientHandler>;
     private server: Server;
     player = new NetworkPlayer(this);
+
+    public dialogueExecutor: DialogueExecutor;
 
     constructor(server: Server, webSockets: ws) {
         this.server = server;

@@ -6,6 +6,8 @@ import { InventoryDisplay } from './InventoryDisplay.js';
 import { TileMapObject } from './TileMapObject.js';
 import { NPC } from './NPC.js';
 import { Vector3 } from '../client/shared/Vector3.js';
+import { DialogueBuilder } from './DialogueBuilder';
+import { dialogues } from './NPCData';
 
 export class Server {
     private clients = new Array<ClientHandler>();
@@ -29,7 +31,7 @@ export class Server {
         this.world.addChild(this.inventoryDisplay);
         this.world.addChild(this.tilemap);
 
-        var npc = new NPC();
+        var npc = new NPC('N', dialogues.get("welcome_dialogue"));
         npc.position = new Vector3(11, 13, 0);
         this.world.addChild(npc);
 

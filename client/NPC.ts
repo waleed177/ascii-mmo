@@ -13,6 +13,7 @@ export class NPC extends Entity {
         if(this.isTalking) {
             keyboard.claimOwnership("dialogue");
         } else {
+            this.talkingDebounce = 2;
             keyboard.releaseOwnership("dialogue");
         }
     }
@@ -20,16 +21,21 @@ export class NPC extends Entity {
     private currentQuestion: string = "";
     private currentOptions = new Array<string>();
     private currentOptionIndex: number = 0;
-
-    init(data: NPCDialogueData) {
-        this.currentQuestion = data.currentQuestion;
-        this.currentOptions = data.currentOptions;
-        this.currentOptionIndex = 0;
-    }
+    private talkingDebounce: number = 0;
 
     ready() {
         this.messageHandler.on("newDialogue", (sender, data: NPCDialogueData) => {
-            this.init(data);
+            if(data == null){
+                this.isTalking = false;
+            } else {
+                this.currentQuestion = data.currentQuestion;
+                this.currentOptions = data.currentOptions;
+                this.currentOptionIndex = 0;
+            }
+        });
+
+        this.messageHandler.on("talk", (sender, data) => {
+            this.isTalking = true;
         });
 
         keyboard.addKeyDownListener("dialogue", (ev) => {
@@ -50,6 +56,11 @@ export class NPC extends Entity {
                 }
             }
         });
+    }
+
+    update() {
+        if (this.talkingDebounce > 0)
+            this.talkingDebounce -= 1;
     }
     
     guiDraw() {
@@ -81,6 +92,7 @@ export class NPC extends Entity {
     }
 
     talk() {
-        this.isTalking = true;
+        if(this.talkingDebounce <= 0)
+            this.emit("talk", {});
     }
 }
