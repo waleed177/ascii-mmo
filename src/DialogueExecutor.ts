@@ -37,29 +37,33 @@ export class DialogueExecutor {
         var option = currentPrompt.options[id];
         if(currentPrompt == null || currentPrompt.options[id] == null)
             return null;
-        if (option.action.startsWith("$")) {
-            var sp = option.action.split(' ');
-            var action = sp[0];
-            var remainder = option.action.substr(action.length+1);
 
-            switch (action) {
-                case "$end": {
-                    this.currentPromptId = -1;
-                    break;
+        for(let i = 0; i < option.actions.length; i++) {
+            let action = option.actions[i];
+            if (action.startsWith("$")) {
+                let sp = action.split(' ');
+                let first_part_action = sp[0];
+                let remainder = action.substr(first_part_action.length+1);
+    
+                switch (first_part_action) {
+                    case "$end": {
+                        this.currentPromptId = -1;
+                        break;
+                    }
+                    case "$quest_add": {
+                        this.client.player.quests.addQuest(
+                            new Quest(remainder)
+                        );
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
                 }
-                case "$quest_add": {
-                    this.client.player.quests.addQuest(
-                        new Quest(remainder)
-                    );
-                    break;
-                }
-                default: {
-                    break;
-                }
+            } else if (action.startsWith("L")) {
+                var newPromptId = Number.parseInt(action.substr(1));
+                this.currentPromptId = newPromptId;
             }
-        } else if (option.action.startsWith("L")) {
-            var newPromptId = Number.parseInt(option.action.substr(1));
-            this.currentPromptId = newPromptId;
         }
         return this.getCurrentPromptData();
     }

@@ -2,7 +2,7 @@ export type DialogueType = Array<{
     prompt: string,
     options: Array<{
         display: string,
-        action: string
+        actions: string[]
     }>;
 }>;
 export class DialogueBuilder {
@@ -31,11 +31,11 @@ export class DialogueBuilder {
         });
     }
 
-    choice(display: string, action: string) {
+    choice(display: string, ...actions: string[]) {
         this.dialogue[this.dialogue.length-1].options.push(
             {
                 display: display,
-                action: action
+                actions: actions
             }
         );
     }
@@ -45,9 +45,13 @@ export class DialogueBuilder {
             let dialoguePiece = this.dialogue[i];
             for(let j = 0; j < dialoguePiece.options.length; j++) {
                 let option = dialoguePiece.options[j];
-                if(!option.action.startsWith("$")) {
-                    option.action = "L" + this.labels.get(option.action);
+                for(let k = 0; k < option.actions.length; k++) {
+                    var action = option.actions[k];
+                    if(!action.startsWith("$")) {
+                        option.actions[k] = "L" + this.labels.get(action);
+                    }
                 }
+                
             }
         }
 
