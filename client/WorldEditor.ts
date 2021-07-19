@@ -24,9 +24,6 @@ export class WorldEditor extends ClientGameObject {
                 this.currentTile = ev.key;
                 this.changeCurrentTileMode = false;
             } else {
-                if(ev.key.toLowerCase() == "x") {
-                    keyboard.claimOwnership(this);
-                }
                 switch(ev.key.toLowerCase()) {
                     case "x": {
                         this.isEditing = true;
@@ -37,19 +34,22 @@ export class WorldEditor extends ClientGameObject {
                         break;
                     }
                     case "e": {
-                        this.alwaysPlace = !this.alwaysPlace;
-                        if(this.alwaysPlace) {
-                            this.emit("place", {
-                                x: this.cursorLocation.x,
-                                y: this.cursorLocation.y,
-                                z: renderer.cameraPosition.z,
-                                tile: this.currentTile
-                            } as PlaceTileData);
+                        if(this.isEditing) {
+                            this.alwaysPlace = !this.alwaysPlace;
+                            if(this.alwaysPlace) {
+                                this.emit("place", {
+                                    x: this.cursorLocation.x,
+                                    y: this.cursorLocation.y,
+                                    z: renderer.cameraPosition.z,
+                                    tile: this.currentTile
+                                } as PlaceTileData);
+                            }
                         }
                         break;
                     }
                     case " ": {
-                        this.changeCurrentTileMode = true;
+                        if(this.isEditing)
+                            this.changeCurrentTileMode = true;
                         break;
                     }
     
@@ -84,7 +84,7 @@ export class WorldEditor extends ClientGameObject {
                 moved = true;
             }
 
-            if(this.alwaysPlace && moved)
+            if(this.alwaysPlace && moved && this.isEditing)
                 this.emit("place", {
                     x: this.cursorLocation.x,
                     y: this.cursorLocation.y,
