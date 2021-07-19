@@ -14,10 +14,17 @@ export class ChatBox extends ServerGameObject {
             if(data.message.startsWith("/")) {
                 var sp = data.message.substr(1).split(" ");
                 var cmd = sp[0];
-                if(cmd == "pnpc") {
-                    var npc = new NPC(sp[1], dialogues.get(sp[2]));
-                    npc.position = sender.player.position;
-                    this.world.addChild(npc);
+                switch(cmd) {
+                    case "pnpc": {
+                        var npc = new NPC(sp[1], dialogues.get(sp[2]));
+                        npc.position = sender.player.position.clone();
+                        this.world.addChild(npc);
+                        break;
+                    }
+                    case "": {
+
+                        break;
+                    }
                 }
             } else {
                 this.emit('message', {

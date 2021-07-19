@@ -1,4 +1,4 @@
-export class Vector3 {  
+export class Vector3 {
     public x: number;
     public y: number;
     public z: number;
@@ -40,4 +40,16 @@ export class Vector3 {
     equals(vector: Vector3) {
         return vector.x == this.x && vector.y == this.y && vector.z == this.z;
     }
+
+    sum() {
+        return this.x + this.y + this.z;
+    }
+
+    abs() {
+        return new Vector3(Math.abs(this.x), Math.abs(this.y), Math.abs(this.z));
+    }
+
+    clone(): Vector3 {
+        return new Vector3(this.x, this.y, this.z);
+    } 
 }
