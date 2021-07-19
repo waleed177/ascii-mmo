@@ -9,12 +9,12 @@ import { Vector3 } from '../client/shared/Vector3.js';
 import { DialogueBuilder } from './DialogueBuilder';
 import { dialogues } from './NPCData';
 import { QuestsDisplay } from './QuestsDisplay.js';
+import { WorldEditor } from './WorldEditor.js';
 
 export class Server {
     private clients = new Array<ClientHandler>();
     public world = new NetworkWorld(this);
     public inventoryDisplay = new InventoryDisplay();
-    public tilemap = new TileMapObject(16, 16, 1);
     public questsDisplay = new QuestsDisplay();
     
     addClient(client: ClientHandler) {
@@ -31,14 +31,16 @@ export class Server {
 
         this.world.addChild(new ChatBox());
         this.world.addChild(this.inventoryDisplay);
-        this.world.addChild(this.tilemap);
+        this.world.addChild(new TileMapObject(16, 16, 1));
+        let tilemap = new TileMapObject(16, 16, 1);
+        tilemap.position = new Vector3(16, 0, 0);
+        this.world.addChild(tilemap);
         this.world.addChild(this.questsDisplay);
+        this.world.addChild(new WorldEditor());
 
         var npc = new NPC('N', dialogues.get("welcome_dialogue"));
         npc.position = new Vector3(11, 13, 0);
         this.world.addChild(npc);
-
-        this.tilemap.tilemap.writeText(1, 1, 0, 'tomatoes are cool');
     }
 
     broadcast(type: string, data: any) {

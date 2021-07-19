@@ -37,15 +37,6 @@ export class Inventory {
 
     useItemId(id: number) {
         this.items[id].quantity -= 1;
-
-        var playerPos = this.clientHandler.player.position;
-        this.clientHandler.player.world.server.tilemap.tilemap.setTile(
-            playerPos.x,
-            playerPos.y,
-            0,
-            id + ""
-        );
-        this.clientHandler.player.world.server.tilemap.commitChanges();
         this.updateDisplay();
     }
 }

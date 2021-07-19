@@ -1,5 +1,4 @@
-export class Vector3 {
-    
+export class Vector3 {  
     public x: number;
     public y: number;
     public z: number;
@@ -36,5 +35,9 @@ export class Vector3 {
     
     length() {
         return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+    }
+
+    equals(vector: Vector3) {
+        return vector.x == this.x && vector.y == this.y && vector.z == this.z;
     }
 }

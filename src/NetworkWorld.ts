@@ -4,6 +4,7 @@ import { ClientHandler } from './ClientHandler';
 import { RemoveGameObjectData } from '../client/shared/RemoveGameObjectData';
 import { Server } from './Server';
 import { ServerGameObject } from './ServerGameObject';
+import { Vector3 } from '../client/shared/Vector3';
 
 export class NetworkWorld extends World {
     server: Server;

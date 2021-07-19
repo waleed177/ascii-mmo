@@ -64,4 +64,14 @@ export class World {
         });
         return res;
     }
+
+    findCollisionsWithPoint(point: Vector3)   {
+        let res: Array<GameObject> = [];
+        this.children.forEach((gameObject, key, map) => {
+            if(gameObject.collidesWithPoint(point)) {
+                res.push(gameObject);
+            }
+        });
+        return res;
+    }
 }

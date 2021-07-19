@@ -62,6 +62,14 @@ export class Keyboard {
             this.keyboardOwner = name;
     }
 
+    public setOwnership(name: OwnerType, own: boolean) {
+        if(own) {
+            this.claimOwnership(name);
+        } else {
+            this.releaseOwnership(name);
+        }
+    }
+
     public releaseOwnership(name: OwnerType) {
         if (this.keyboardOwner == name) 
             this.keyboardOwner = null;

@@ -1,4 +1,5 @@
 import {MessageHandler} from "./MessageHandler.js"
+import { Vector3 } from "./Vector3.js";
 import { World } from "./World.js";
 
 export class GameObject {
@@ -25,5 +26,13 @@ export class GameObject {
 
     public ready() {
 
+    }
+
+    public collidesWith(gameObject: GameObject) {
+        return false;
+    }
+
+    public collidesWithPoint(position: Vector3) {
+        return false;
     }
 }
