@@ -1,6 +1,9 @@
 import { SpawnGameObjectData } from '../client/shared/SpawnGameObjectData';
 import { ServerGameObject } from './ServerGameObject';
 import { ChatMessageData } from '../client/shared/ChatMessageData';
+import { Vector3 } from '../client/shared/Vector3';
+import { NPC } from './NPC';
+import { dialogues } from './NPCData';
 
 export class ChatBox extends ServerGameObject {
 
@@ -8,9 +11,19 @@ export class ChatBox extends ServerGameObject {
         super();
 
         this.messageHandler.on("message", (sender, data: ChatMessageData) => {
-            this.emit('message', {
-                message: "anon: " + data.message
-            } as ChatMessageData);
+            if(data.message.startsWith("/")) {
+                var sp = data.message.substr(1).split(" ");
+                var cmd = sp[0];
+                if(cmd == "pnpc") {
+                    var npc = new NPC(sp[1], dialogues.get(sp[2]));
+                    npc.position = sender.player.position;
+                    this.world.addChild(npc);
+                }
+            } else {
+                this.emit('message', {
+                    message: "anon: " + data.message
+                } as ChatMessageData);
+            }
         });
 
     }

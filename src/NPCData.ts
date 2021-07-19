@@ -25,3 +25,18 @@ d.prompt(":3")
 dialogues.set("welcome_dialogue", d.build());
 //
 
+d.clear();
+d.label("start");
+d.prompt("Do you like tomato?");
+d.choice("Yes", "yes");
+d.choice("No", "no");
+
+d.label("yes");
+d.prompt("Good")
+
+d.label("no");
+d.prompt("no u");
+
+dialogues.set("test2", d.build());
+
+

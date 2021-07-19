@@ -17,7 +17,7 @@ export class ChatBox extends ClientGameObject {
         }
     }
     private currentSendText: string = "";
-    private size: Vector2 = new Vector2(20, 10);
+    private size: Vector2 = new Vector2(30, 10);
     private messages: Array<string> = new Array<string>();
 
     constructor() {
@@ -38,7 +38,9 @@ export class ChatBox extends ClientGameObject {
                     this.currentSendText += ev.key;
                 }
             }
-           
+           if(this.typingMode){
+               ev.preventDefault();
+           }
         });
 
         this.messageHandler.on("message", (sender, data: ChatMessageData) => {
