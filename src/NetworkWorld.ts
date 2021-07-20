@@ -4,7 +4,8 @@ import { ClientHandler } from './ClientHandler';
 import { RemoveGameObjectData } from '../client/shared/RemoveGameObjectData';
 import { Server } from './Server';
 import { ServerGameObject } from './ServerGameObject';
-import { Vector3 } from '../client/shared/Vector3';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class NetworkWorld extends World {
     server: Server;
@@ -33,6 +34,20 @@ export class NetworkWorld extends World {
         this.children.forEach((gameObject: ServerGameObject, key, map) => {
             client.emit('spawnGameObject', gameObject.getPublicData());
         });
+    }
+
+    serialize() {
+        let res: Array<any> = [];
+        this.children.forEach((gameObject: ServerGameObject, key, map) => {
+            if(gameObject.shouldBeSerialized)
+                res.push(gameObject.serialize());
+        });
+        return res;
+    }
+
+    save() {
+        console.log("Saved to: " + path.join(__dirname, 'test.json'));
+        fs.writeFile(path.join(__dirname, 'test.json'), JSON.stringify(this.serialize()), ()=>{});
     }
 
     private getFreeId() {

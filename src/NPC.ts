@@ -3,17 +3,20 @@ import { UseChoiceData } from '../client/shared/UseChoiceData';
 import { NPCDialogueData } from '../client/shared/NPCDialogueData';
 import { DialogueType } from './DialogueBuilder';
 import { DialogueExecutor } from './DialogueExecutor';
+import { dialogues } from './NPCData';
 
 export class NPC extends NetworkEntity {
     private dialogue: DialogueType;
+    dialogueName: string;
 
-    constructor(sprite: string, dialogue: DialogueType) {
+    constructor(sprite: string, dialogueName: string) {
         super();
 
         this.prefab = "npc";
         this.sprite = sprite;
 
-        this.dialogue = dialogue;
+        this.dialogue = dialogues.get(dialogueName);
+        this.dialogueName = dialogueName;
     }
 
     ready() {
@@ -26,5 +29,11 @@ export class NPC extends NetworkEntity {
         this.messageHandler.on("use", (sender, data: UseChoiceData) => {
             this.emitTo(sender, "newDialogue", sender.dialogueExecutor.useOption(data.id));
         });
+    }
+
+    getPrivateData() {
+        return {
+            dialogueName: this.dialogueName
+        };
     }
 }

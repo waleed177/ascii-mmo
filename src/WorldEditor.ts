@@ -6,6 +6,8 @@ import { TileMapObject } from './TileMapObject';
 
 
 export class WorldEditor extends ServerGameObject {
+    shouldBeSerialized = false;
+
     constructor() {
         super();
 

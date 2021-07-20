@@ -4,6 +4,8 @@ import { ClientHandler } from './ClientHandler';
 import { ServerGameObject } from './ServerGameObject';
 
 export class QuestsDisplay extends ServerGameObject {
+    shouldBeSerialized = false;
+
     constructor() {
         super();
 

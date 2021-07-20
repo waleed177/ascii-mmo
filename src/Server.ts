@@ -38,7 +38,7 @@ export class Server {
         this.world.addChild(this.questsDisplay);
         this.world.addChild(new WorldEditor());
 
-        var npc = new NPC('N', dialogues.get("welcome_dialogue"));
+        var npc = new NPC('N', "welcome_dialogue");
         npc.position = new Vector3(11, 13, 0);
         this.world.addChild(npc);
     }

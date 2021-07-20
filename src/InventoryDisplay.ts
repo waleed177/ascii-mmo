@@ -5,6 +5,8 @@ import { ClientHandler } from './ClientHandler';
 import { UseItemData } from '../client/shared/UseItemData';
 
 export class InventoryDisplay extends ServerGameObject {
+    shouldBeSerialized = false;
+
     constructor() {
         super();
 

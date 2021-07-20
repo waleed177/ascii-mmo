@@ -7,7 +7,8 @@ import { GameObject } from '../client/shared/GameObject';
 import { TileMapObject } from './TileMapObject';
 
 export class ChatBox extends ServerGameObject {
-
+    shouldBeSerialized = false;
+    
     constructor() {
         super();
 
@@ -17,7 +18,7 @@ export class ChatBox extends ServerGameObject {
                 var cmd = sp[0];
                 switch(cmd) {
                     case "pnpc": {
-                        var npc = new NPC(sp[1], dialogues.get(sp[2]));
+                        var npc = new NPC(sp[1], sp[2]);
                         npc.position = sender.player.position.clone();
                         this.world.addChild(npc);
                         break;
@@ -54,8 +55,8 @@ export class ChatBox extends ServerGameObject {
                         );
                         break;
                     }
-                    case "": {
-
+                    case "save": {
+                        this.world.save();
                         break;
                     }
                 }

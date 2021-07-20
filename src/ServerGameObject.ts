@@ -8,7 +8,8 @@ import { MessageHandler } from '../client/shared/MessageHandler';
 export class ServerGameObject extends GameObject {
     world: NetworkWorld;
     messageHandler: MessageHandler<ClientHandler>;
-    
+    shouldBeSerialized: boolean = true;
+
     getPublicData(): SpawnGameObjectData {
         return {
             id: this.id,
@@ -18,6 +19,17 @@ export class ServerGameObject extends GameObject {
             z: -1,
             prefab: "entityCharSprite",
             data: {}
+        }
+    }
+
+    getPrivateData(): any {
+        return {};
+    }
+
+    serialize() {
+        return {
+            public_data: this.getPublicData(),
+            private_data: this.getPrivateData()
         }
     }
 

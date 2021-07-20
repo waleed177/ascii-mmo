@@ -10,7 +10,8 @@ export class NetworkPlayer extends NetworkEntity {
     inventory: Inventory;
     quests: Quests;
     clientHandler: ClientHandler;
-
+    shouldBeSerialized: boolean = false;
+    
     constructor(clientHandler: ClientHandler) {
         super();
         this.sprite = 'P';
