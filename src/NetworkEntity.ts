@@ -20,4 +20,8 @@ export class NetworkEntity extends ServerGameObject {
             data: this.data
         }
     }
+
+    collidesWithPoint(v: Vector3) {
+        return v.equals(this.position);
+    }
 }
