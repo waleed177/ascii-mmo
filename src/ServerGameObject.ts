@@ -4,6 +4,7 @@ import { ClientHandler } from './ClientHandler';
 import { NetworkWorld } from './NetworkWorld';
 import { EmitForGameObjectData } from '../client/shared/EmitForGameObjectData';
 import { MessageHandler } from '../client/shared/MessageHandler';
+import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 
 export class ServerGameObject extends GameObject {
     world: NetworkWorld;
@@ -26,11 +27,15 @@ export class ServerGameObject extends GameObject {
         return {};
     }
 
-    serialize() {
+    serialize(): ServerSerializedGameObject {
         return {
-            public_data: this.getPublicData(),
-            private_data: this.getPrivateData()
+            publicData: this.getPublicData(),
+            privateData: this.getPrivateData()
         }
+    }
+
+    deserialize(data: ServerSerializedGameObject) {
+
     }
 
     emit(type: string, data: any) {

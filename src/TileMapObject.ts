@@ -4,13 +4,21 @@ import { TileMap } from '../client/shared/TileMap';
 import { RecieveTileMapData } from '../client/shared/RecieveTileMapData';
 import { Vector3 } from '../client/shared/Vector3';
 import { NetworkEntity } from './NetworkEntity';
+import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 
 export class TileMapObject extends NetworkEntity {
     public tilemap: TileMap;
 
-    constructor(width: number, height: number, depth: number) {
-        super();
+
+    setup(width: number, height: number, depth: number) {
         this.tilemap = new TileMap(width, height, depth);
+    }
+
+    deserialize(data: ServerSerializedGameObject) {
+        super.deserialize(data);
+        let publicData = data.publicData.data as RecieveTileMapData;
+        this.setup(publicData.width, publicData.height, publicData.depth);
+        this.tilemap.useMap(publicData.tilemap);
     }
 
     getPublicData(): SpawnGameObjectData {

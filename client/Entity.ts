@@ -4,6 +4,8 @@ import { Sprite } from "./shared/Sprite.js";
 import { Vector3 } from "./shared/Vector3.js";
 import { SettingPositionData } from "./shared/SettingPositionData.js";
 import { Socket } from "./Socket.js";
+import { SpawnGameObjectData } from "./shared/SpawnGameObjectData.js";
+import { CharSprite } from "./CharSprite.js";
 
 export class Entity extends ClientGameObject {
     public sprite: Sprite;
@@ -34,5 +36,10 @@ export class Entity extends ClientGameObject {
                 z: this.position.z
             } as SettingPositionData
         )
+    }
+
+    public init(data: SpawnGameObjectData) {
+        this.sprite = new CharSprite(new Vector3(0, 0, 0), data.sprite);
+        this.position = new Vector3(data.x, data.y, data.z);
     }
 }

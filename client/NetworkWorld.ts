@@ -6,13 +6,14 @@ import { SpawnGameObjectData } from "./shared/SpawnGameObjectData.js";
 import { World } from "./shared/World.js";
 import { LocalPlayerIdData } from "./shared/LocalPlayerIdData.js";
 import { ChatBox } from "./ChatBox.js";
-import { PrefabInstantiator } from "./GameObjectInstantiator.js";
+import { PrefabInstantiator } from "./shared/GameObjectInstantiator.js";
 import { RemoveGameObjectData } from "./shared/RemoveGameObjectData.js";
 import { Inventory } from './Inventory.js';
 import { TileMapObject } from "./TileMapObject.js";
 import { NPC } from './NPC.js';
 import { QuestDisplay } from './QuestDisplay.js';
 import { WorldEditor } from './WorldEditor.js';
+import { Vector3 } from "./shared/Vector3.js";
 
 export class NetworkWorld extends World {
     public playerId: number;    
@@ -47,5 +48,17 @@ export class NetworkWorld extends World {
         socket.on("receiveLocalPlayerId", (data: LocalPlayerIdData) => {
             this.playerId = data.id;
         });
+    }
+
+    findEntitiesWithinRadius(position: Vector3, radius: number) {
+        let res: Array<Entity> = [];
+        this.children.forEach((gameObject, key, map) => {
+            if(gameObject instanceof Entity) {
+                if(gameObject.position.sub(position).length() <= radius) {
+                    res.push(gameObject);
+                }
+            }
+        });
+        return res;
     }
 }

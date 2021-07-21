@@ -18,7 +18,9 @@ export class ChatBox extends ServerGameObject {
                 var cmd = sp[0];
                 switch(cmd) {
                     case "pnpc": {
-                        var npc = new NPC(sp[1], sp[2]);
+                        var npc = new NPC();
+                        npc.sprite = sp[1];
+                        npc.dialogueName = sp[2];
                         npc.position = sender.player.position.clone();
                         this.world.addChild(npc);
                         break;

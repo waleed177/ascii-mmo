@@ -1,4 +1,5 @@
 import {MessageHandler} from "./MessageHandler.js"
+import { SpawnGameObjectData } from "./SpawnGameObjectData.js";
 import { Vector3 } from "./Vector3.js";
 import { World } from "./World.js";
 
@@ -20,7 +21,7 @@ export class GameObject {
         
     }
 
-    public init(data: any) {
+    public init(data: SpawnGameObjectData) {
         
     }
 

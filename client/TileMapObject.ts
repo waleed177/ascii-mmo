@@ -1,6 +1,7 @@
 import { renderer } from "./Client.js";
 import { Entity } from "./Entity.js";
 import { RecieveTileMapData } from "./shared/RecieveTileMapData.js";
+import { SpawnGameObjectData } from "./shared/SpawnGameObjectData.js";
 import { Vector3 } from "./shared/Vector3.js";
 
 export class TileMapObject extends Entity {
@@ -16,7 +17,9 @@ export class TileMapObject extends Entity {
         });
     }
 
-    init(data: RecieveTileMapData) {
+    init(spawnData: SpawnGameObjectData) {
+        super.init(spawnData);
+        let data = spawnData.data as RecieveTileMapData;
         this.tilemap = data.tilemap;
         this.size = new Vector3(data.width, data.height, data.depth);
     }

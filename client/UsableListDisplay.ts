@@ -2,6 +2,7 @@ import { keyboard, renderer } from './Client.js';
 import { ClientGameObject } from './ClientGameObject.js';
 import { Entity } from './Entity.js';
 import { RecieveItemListData } from './shared/RecieveItemListData.js';
+import { SpawnGameObjectData } from './shared/SpawnGameObjectData.js';
 import { UseItemData } from './shared/UseItemData.js';
 import { Vector2 } from './shared/Vector2.js';
 
@@ -40,7 +41,7 @@ export class UsableListDisplay extends ClientGameObject {
         });
 
         this.messageHandler.on("recieveItems", (sender, data: RecieveItemListData) => {
-            this.init(data);
+            this.displayItems = data.displayItems;
         });
     }
 
@@ -54,7 +55,9 @@ export class UsableListDisplay extends ClientGameObject {
         this.usingKeyboard = true;
     }
 
-    init(data: RecieveItemListData) {
+    init(spawnData: SpawnGameObjectData) {
+        super.init(spawnData);
+        let data = spawnData.data as RecieveItemListData;
         this.displayItems = data.displayItems;
     }
 

@@ -1,4 +1,3 @@
-import { Entity } from "../Entity.js";
 import { GameObject } from "./GameObject.js";
 import { Vector3 } from "./Vector3.js";
 
@@ -51,18 +50,6 @@ export class World {
 
     getChild(id: number) {
         return this.children.get(id);
-    }
-
-    findEntitiesWithinRadius(position: Vector3, radius: number) {
-        let res: Array<Entity> = [];
-        this.children.forEach((gameObject, key, map) => {
-            if(gameObject instanceof Entity) {
-                if(gameObject.position.sub(position).length() <= radius) {
-                    res.push(gameObject);
-                }
-            }
-        });
-        return res;
     }
 
     findCollisionsWithPoint(point: Vector3)   {

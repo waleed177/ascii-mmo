@@ -4,19 +4,31 @@ import { NPCDialogueData } from '../client/shared/NPCDialogueData';
 import { DialogueType } from './DialogueBuilder';
 import { DialogueExecutor } from './DialogueExecutor';
 import { dialogues } from './NPCData';
+import { ServerGameObject } from './ServerGameObject';
+import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 
 export class NPC extends NetworkEntity {
     private dialogue: DialogueType;
-    dialogueName: string;
+    private _dialogueName: string;
+    public get dialogueName(): string {
+        return this._dialogueName;
+    }
+    public set dialogueName(value: string) {
+        this._dialogueName = value;
+        this.dialogue = dialogues.get(value);
+    }
 
-    constructor(sprite: string, dialogueName: string) {
+    constructor() {
         super();
 
         this.prefab = "npc";
-        this.sprite = sprite;
+        this.sprite = "N";
+    }
 
-        this.dialogue = dialogues.get(dialogueName);
-        this.dialogueName = dialogueName;
+    deserialize(data: ServerSerializedGameObject) {
+        super.deserialize(data);
+        let publicData = data.privateData as {dialogueName: string};
+        this.dialogueName = publicData.dialogueName;
     }
 
     ready() {

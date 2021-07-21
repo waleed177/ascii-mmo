@@ -56,4 +56,8 @@ export class TileMap {
         else
             return ' ';    
     }
+
+    useMap(tilemap: string[][][]) {
+        this.tilemap = tilemap;
+    }
 }

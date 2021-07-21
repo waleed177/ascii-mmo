@@ -31,16 +31,11 @@ export class Server {
 
         this.world.addChild(new ChatBox());
         this.world.addChild(this.inventoryDisplay);
-        this.world.addChild(new TileMapObject(16, 16, 1));
-        let tilemap = new TileMapObject(16, 16, 1);
-        tilemap.position = new Vector3(16, 0, 0);
-        this.world.addChild(tilemap);
         this.world.addChild(this.questsDisplay);
         this.world.addChild(new WorldEditor());
+        this.world.load();
 
-        var npc = new NPC('N', "welcome_dialogue");
-        npc.position = new Vector3(11, 13, 0);
-        this.world.addChild(npc);
+
     }
 
     broadcast(type: string, data: any) {
