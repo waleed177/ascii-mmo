@@ -1,6 +1,7 @@
 import { Vector3 } from "./shared/Vector3.js";
 
 //TODO REMOVE CODE DUPLICATION :(
+//TODO, RENDERER SHOULD NOT NEED DEPTH, ONLY CHECK IF camera z is THE SAME AS TILE
 export class Renderer {
     private context: CanvasRenderingContext2D;
     private tilemap: Array<Array<Array<string>>>;
