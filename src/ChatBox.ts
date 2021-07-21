@@ -61,6 +61,13 @@ export class ChatBox extends ServerGameObject {
                         this.world.save();
                         break;
                     }
+                    case "tilemap": {
+                        var tilemap = new TileMapObject();
+                        tilemap.setup(Number.parseInt(sp[1]), Number.parseInt(sp[2]), Number.parseInt(sp[3]));
+                        tilemap.position = sender.player.position;
+                        this.world.addChild(tilemap);
+                        break;
+                    }
                 }
             } else {
                 this.emit('message', {

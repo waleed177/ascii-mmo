@@ -5,7 +5,13 @@ import { ServerGameObject } from './ServerGameObject';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 
 export class NetworkEntity extends ServerGameObject {
-    public position = new Vector3(0, 0, 0);
+    private _position = new Vector3(0, 0, 0);
+    public get position() {
+        return this._position;
+    }
+    public set position(value) {
+        this._position = value.clone();
+    }
     public sprite: string = ' ';
     public prefab: PrefabName = 'entityCharSprite';
     public data: object = {};

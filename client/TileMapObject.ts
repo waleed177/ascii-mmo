@@ -1,4 +1,4 @@
-import { renderer } from "./Client.js";
+import { keyboard, renderer } from "./Client.js";
 import { Entity } from "./Entity.js";
 import { RecieveTileMapData } from "./shared/RecieveTileMapData.js";
 import { SpawnGameObjectData } from "./shared/SpawnGameObjectData.js";
@@ -29,9 +29,12 @@ export class TileMapObject extends Entity {
             var z = renderer.cameraPosition.z - this.position.z;
             if ( 0 <= z && z < this.size.z)
                 for(let x = 0; x < this.size.x; x++)
-                    for(let y = 0; y < this.size.y; y++)
+                    for(let y = 0; y < this.size.y; y++) {
                         if(this.tilemap[x][y][z] != " ")
                             renderer.setTile(this.position.x + x, this.position.y + y, this.position.z + z, this.tilemap[x][y][z]);
+                        if(keyboard.isKeyDown("t"))
+                            renderer.setTile(this.position.x + x, this.position.y + y, this.position.z + z, "T");
+                    }
         }
     }
 }
