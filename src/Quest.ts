@@ -1,7 +1,9 @@
 export class Quest {
     displayName: string;
+    name: string;
 
-    constructor(displayName: string) {
+    constructor(name: string, displayName: string) {
+        this.name = name;
         this.displayName = displayName;
     }
 }

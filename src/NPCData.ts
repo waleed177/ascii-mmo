@@ -8,7 +8,7 @@ export let dialogues = new Map<string, DialogueType>();
 d.clear();
 d.label("start");
 d.prompt("Welcome to game!");
-d.choice("Thanks", "$quest_add yeah?", "$end");
+d.choice("Thanks", "$quest_add yeah yeah?", "$end");
 d.choice("Yeah?", "game");
 
 d.label("game");
@@ -28,7 +28,7 @@ dialogues.set("welcome_dialogue", d.build());
 d.clear();
 d.label("start");
 d.prompt("Do you like tomato?");
-d.choice("Yes", "yes");
+d.choice("Yes", "yes", "$quest_add tomato Get tomatoes!");
 d.choice("No", "no");
 
 d.label("yes");
@@ -39,4 +39,15 @@ d.prompt("no u");
 
 dialogues.set("test2", d.build());
 
+//
+
+d.clear();
+d.label("start");
+d.prompt("Did you do it?");
+d.choice("Yes", "$quest_complete tomato then", "yay");
+
+d.label("yay");
+d.prompt("You did it!");
+
+dialogues.set("tomato", d.build());
 

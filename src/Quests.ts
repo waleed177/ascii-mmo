@@ -19,12 +19,26 @@ export class Quests {
 
 
     updateDisplay() {
+        this.displayQuests = [];
+        this.quests.forEach((quest, index, array) => {
+            this.displayQuests.push(quest.displayName);
+        });
         this.questsDisplay.emitDisplayUpdate(this.clientHandler, this.displayQuests);
     }
 
     addQuest(quest: Quest) {
-        this.displayQuests.push(quest.displayName);
         this.quests.push(quest);
         this.updateDisplay();
+    }
+
+    completeQuest(questName: string) {
+        for(let i = 0; i < this.quests.length; i++) {
+            if(this.quests[i].name == questName) {
+                this.quests.splice(i, 1);
+                this.updateDisplay();
+                return true;
+            }
+        }
+        return false;
     }
 }

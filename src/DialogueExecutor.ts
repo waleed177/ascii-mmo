@@ -39,6 +39,7 @@ export class DialogueExecutor {
             return null;
 
         for(let i = 0; i < option.actions.length; i++) {
+            let leaveLoop = false;
             let action = option.actions[i];
             if (action.startsWith("$")) {
                 let sp = action.split(' ');
@@ -52,9 +53,16 @@ export class DialogueExecutor {
                     }
                     case "$quest_add": {
                         this.client.player.quests.addQuest(
-                            new Quest(remainder)
+                            new Quest(sp[1], remainder.substr(sp[1].length+1))
                         );
                         break;
+                    }
+                    case "$quest_complete": {
+                        if(!this.client.player.quests.completeQuest(sp[1])) {
+                            if (sp.length == 3 && sp[2] == "then") {
+                                leaveLoop = true;
+                            }
+                        }
                     }
                     default: {
                         break;
@@ -63,6 +71,10 @@ export class DialogueExecutor {
             } else if (action.startsWith("L")) {
                 var newPromptId = Number.parseInt(action.substr(1));
                 this.currentPromptId = newPromptId;
+            }
+
+            if(leaveLoop) {
+                break;
             }
         }
         return this.getCurrentPromptData();
