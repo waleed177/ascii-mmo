@@ -47,6 +47,11 @@ export class WorldEditor extends ClientGameObject {
                         }
                         break;
                     }
+                    case "h": {
+                        if(this.isEditing) {
+                            this.cursorLocation = this.world.player.position.clone();
+                        }
+                    }
                     case " ": {
                         if(this.isEditing)
                             this.changeCurrentTileMode = true;
@@ -98,7 +103,7 @@ export class WorldEditor extends ClientGameObject {
     }
 
 
-    draw() {
+    guiDraw() {
         if (this.isEditing){
             renderer.setTile(this.cursorLocation.x, this.cursorLocation.y, 0, 
                 this.changeCurrentTileMode ? "C" : (this.alwaysPlace ? "P" : "X"));

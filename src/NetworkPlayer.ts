@@ -35,7 +35,7 @@ export class NetworkPlayer extends NetworkEntity {
                                 0
                             );
 
-                            if(tile != " ") {
+                            if(tile != " " && tile != ".") {
                                 collision = true;
                             }
                         }

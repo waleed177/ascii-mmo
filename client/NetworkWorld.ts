@@ -16,7 +16,8 @@ import { WorldEditor } from './WorldEditor.js';
 import { Vector3 } from "./shared/Vector3.js";
 
 export class NetworkWorld extends World {
-    public playerId: number;    
+    public playerId: number;  
+    public player: Player;  
     public socket: Socket;
     private instantiator = new PrefabInstantiator();
 
@@ -47,6 +48,7 @@ export class NetworkWorld extends World {
 
         socket.on("receiveLocalPlayerId", (data: LocalPlayerIdData) => {
             this.playerId = data.id;
+            this.player = this.children.get(data.id) as Player;
         });
     }
 
