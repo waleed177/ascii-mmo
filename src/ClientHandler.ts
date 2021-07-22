@@ -37,7 +37,7 @@ export class ClientHandler {
     }
 
     public initPlayerEntity() {
-        this.player.position = new Vector3(11, 11, 0);
+        this.player.position = this.server.world.spawnPoint;
         this.server.world.sendWorldTo(this);
         this.server.world.addChild(this.player);
         this.emit('receiveLocalPlayerId', {

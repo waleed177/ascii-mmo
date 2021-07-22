@@ -13,11 +13,17 @@ import { NetworkEntity } from './NetworkEntity';
 import { ServerPrefabInstantiator } from './ServerPrefabInstantiator';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 
+type WorldSaveFormat = {
+    spawnPoint: Vector3,
+    gameObjects: Array<ServerSerializedGameObject>
+}
+
 export class NetworkWorld extends World {
     server: Server;
     private freeId = 0;
 
     private instantiator = new ServerPrefabInstantiator();
+    spawnPoint: Vector3 = new Vector3(0, 0, 0);
 
     constructor(server: Server) {
         super();
@@ -48,11 +54,17 @@ export class NetworkWorld extends World {
     }
 
     serialize() {
-        let res: Array<ServerSerializedGameObject> = [];
+        let data = new Array<ServerSerializedGameObject>();
+        
         this.children.forEach((gameObject: ServerGameObject, key, map) => {
             if(gameObject.shouldBeSerialized)
-                res.push(gameObject.serialize());
+                data.push(gameObject.serialize());
         });
+
+        let res: WorldSaveFormat = {
+            spawnPoint: this.spawnPoint,
+            gameObjects: data
+        };
         return res;
     }
 
@@ -63,11 +75,15 @@ export class NetworkWorld extends World {
 
     load() {
         try {
-            const data: Array<ServerSerializedGameObject> = JSON.parse(fs.readFileSync(path.join(__dirname, '../test.json'), 'utf8'));
-            data.forEach((objData, index, array) => {
+            const data: WorldSaveFormat = JSON.parse(fs.readFileSync(path.join(__dirname, '../test.json'), 'utf8'));
+            
+            data.gameObjects.forEach((objData, index, array) => {
                 var gameObject = this.instantiator.instantiateServerObject(objData);
                 this.addChild(gameObject);
             });
+
+            this.spawnPoint = new Vector3(data.spawnPoint.x, data.spawnPoint.y, data.spawnPoint.z);
+            
             console.log("loaded world!");
         } catch (err) {
             console.error(err);

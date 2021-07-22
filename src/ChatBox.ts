@@ -5,6 +5,7 @@ import { NPC } from './NPC';
 import { dialogues } from './NPCData';
 import { GameObject } from '../client/shared/GameObject';
 import { TileMapObject } from './TileMapObject';
+import { Vector3 } from '../client/shared/Vector3';
 
 export class ChatBox extends ServerGameObject {
     shouldBeSerialized = false;
@@ -73,6 +74,9 @@ export class ChatBox extends ServerGameObject {
                         tilemap.position = sender.player.position;
                         this.world.addChild(tilemap);
                         break;
+                    }
+                    case "setspawnpointhere": {
+                        this.world.spawnPoint = sender.player.position.clone();
                     }
                 }
             } else {
