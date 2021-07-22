@@ -49,6 +49,7 @@ export class NetworkWorld extends World {
         socket.on("receiveLocalPlayerId", (data: LocalPlayerIdData) => {
             this.playerId = data.id;
             this.player = this.children.get(data.id) as Player;
+            this.player.clientOwned = true;
         });
     }
 

@@ -3,6 +3,7 @@ import { Entity } from "./Entity.js";
 import { Vector3 } from "./shared/Vector3.js";
 import { keyboard, renderer } from "./Client.js";
 import { NPC } from "./NPC.js";
+import { TileMapObject } from "./TileMapObject.js";
 export class Player extends Entity {
     private cameraZ = 0;
 
@@ -49,6 +50,8 @@ export class Player extends Entity {
     }
 
     private handleMovement() {
+        let lastPos = this.position.clone();
+
         if (keyboard.isKeyDown("d") || keyboard.isKeyDown("D")) {
             this.position.x += 1;
             this.sendNewPosition();
@@ -67,6 +70,27 @@ export class Player extends Entity {
         if (keyboard.isKeyDown("w") || keyboard.isKeyDown("W")) {
             this.position.y -= 1;
             this.sendNewPosition();
+        }
+
+        let collision = false;
+        this.world.findCollisionsWithPoint(this.position).forEach(
+            (gameObject, index, array) => {
+                if(gameObject instanceof TileMapObject) {
+                    var tile = gameObject.tilemap.getTile(
+                        this.position.x - gameObject.position.x,
+                        this.position.y - gameObject.position.y,
+                        0
+                    );
+    
+                    if(tile != " " && tile != ".") {
+                        collision = true;
+                    }
+                }
+            }
+        )
+
+        if(collision) {
+            this.position = lastPos;
         }
     }
 }

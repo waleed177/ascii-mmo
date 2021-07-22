@@ -8,6 +8,7 @@ export class GameObject {
 
     public messageHandler = new MessageHandler();
     public id: number;
+    public clientOwned: boolean = false;
 
     update() {
 
