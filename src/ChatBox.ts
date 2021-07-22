@@ -6,6 +6,7 @@ import { dialogues } from './NPCData';
 import { GameObject } from '../client/shared/GameObject';
 import { TileMapObject } from './TileMapObject';
 import { Vector3 } from '../client/shared/Vector3';
+import { Mob } from './Mob';
 
 export class ChatBox extends ServerGameObject {
     shouldBeSerialized = false;
@@ -77,6 +78,13 @@ export class ChatBox extends ServerGameObject {
                     }
                     case "setspawnpointhere": {
                         this.world.spawnPoint = sender.player.position.clone();
+                        break;
+                    }
+                    case "spawnmob": {
+                        let mob = new Mob();
+                        mob.position = sender.player.position;
+                        this.world.addChild(mob); 
+                        break;
                     }
                 }
             } else {

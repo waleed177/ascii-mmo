@@ -37,4 +37,8 @@ export class GameObject {
     public collidesWithPoint(position: Vector3) {
         return false;
     }
+
+    public preciseCollidesWithPoint(position: Vector3) {
+        return false;
+    }
 }

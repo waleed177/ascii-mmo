@@ -35,7 +35,9 @@ export class Server {
         this.world.addChild(new WorldEditor());
         this.world.load();
 
-
+        setInterval(() => {
+            this.world.update();
+        }, 100);
     }
 
     broadcast(type: string, data: any) {

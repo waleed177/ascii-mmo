@@ -12,6 +12,7 @@ import { Vector3 } from '../client/shared/Vector3';
 import { NetworkEntity } from './NetworkEntity';
 import { ServerPrefabInstantiator } from './ServerPrefabInstantiator';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
+import { Mob } from './Mob';
 
 type WorldSaveFormat = {
     spawnPoint: Vector3,
@@ -22,7 +23,7 @@ export class NetworkWorld extends World {
     server: Server;
     private freeId = 0;
 
-    private instantiator = new ServerPrefabInstantiator();
+    public instantiator = new ServerPrefabInstantiator();
     spawnPoint: Vector3 = new Vector3(0, 0, 0);
 
     constructor(server: Server) {
@@ -31,6 +32,7 @@ export class NetworkWorld extends World {
         
         this.instantiator.bind("tileMap", TileMapObject);
         this.instantiator.bind("npc", NPC);
+        this.instantiator.bind("mob", Mob);
     }
 
     addChild(gameObject: ServerGameObject) {
@@ -127,6 +129,15 @@ export class NetworkWorld extends World {
                     res.push(gameObject);
                 }
             }
+        });
+        return res;
+    }
+
+    findEntitiesCollidingWithPoint(position: Vector3) {
+        let res: Array<NetworkEntity> = [];
+        this.children.forEach((gameObject, key, map) => {
+            if(gameObject instanceof NetworkEntity && gameObject.preciseCollidesWithPoint(position)) 
+                res.push(gameObject);
         });
         return res;
     }

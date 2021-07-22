@@ -1,4 +1,5 @@
 import { PrefabName } from '../client/shared/Prefabs';
+import { SettingPositionData } from '../client/shared/SettingPositionData';
 import { SpawnGameObjectData } from '../client/shared/SpawnGameObjectData';
 import { Vector3 } from '../client/shared/Vector3';
 import { ServerGameObject } from './ServerGameObject';
@@ -14,6 +15,7 @@ export class NetworkEntity extends ServerGameObject {
     }
     public sprite: string = ' ';
     public prefab: PrefabName = 'entityCharSprite';
+    public privatePrefab: PrefabName = null;
     public data: object = {};
 
     deserialize(data: ServerSerializedGameObject){
@@ -24,6 +26,9 @@ export class NetworkEntity extends ServerGameObject {
         this.position.y = data.publicData.y;
         this.position.z = data.publicData.z;
         this.prefab = data.publicData.prefab;
+        let privateData: {prefab?: PrefabName} = data.privateData;
+        if(privateData.prefab !== undefined)
+            this.privatePrefab = privateData.prefab;
         this.data = data.publicData.data;
     }
 
@@ -41,5 +46,13 @@ export class NetworkEntity extends ServerGameObject {
 
     collidesWithPoint(v: Vector3) {
         return v.equals(this.position);
+    }
+
+    emitPosition() {
+        this.emit('settingPosition', {
+            x: this.position.x,
+            y: this.position.y,
+            z: this.position.z
+        } as SettingPositionData);
     }
 }

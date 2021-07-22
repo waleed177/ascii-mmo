@@ -51,4 +51,11 @@ export class TileMapObject extends NetworkEntity {
         return this.position.x <= point.x && point.x < this.position.x + this.tilemap.width
             && this.position.y <= point.y && point.y < this.position.y + this.tilemap.height;
     }
+    
+    preciseCollidesWithPoint(point: Vector3) {
+        if (!this.collidesWithPoint(point))
+            return false;
+        let point2 = point.sub(this.position);
+        return " .".indexOf(this.tilemap.getTile(point2.x, point2.y, point2.z)) == -1;
+    }
 }

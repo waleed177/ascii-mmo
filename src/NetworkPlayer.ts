@@ -26,21 +26,7 @@ export class NetworkPlayer extends NetworkEntity {
             if(newPos.sub(this.position).abs().sum() > 1) {
                 collision = true;
             } else {
-                this.world.findCollisionsWithPoint(newPos).forEach(
-                    (gameObject, index, array) => {
-                        if(gameObject instanceof TileMapObject) {
-                            var tile = gameObject.tilemap.getTile(
-                                newPos.x - gameObject.position.x,
-                                newPos.y - gameObject.position.y,
-                                0
-                            );
-
-                            if(tile != " " && tile != ".") {
-                                collision = true;
-                            }
-                        }
-                    }
-                )
+                collision = this.world.findEntitiesCollidingWithPoint(newPos).length >0;
             }
             
             if (!collision) {
@@ -51,7 +37,7 @@ export class NetworkPlayer extends NetworkEntity {
                 data.y = this.position.y;
             }
 
-            this.emit('settingPosition', data);
+            this.emitPosition();
             
         });
     }

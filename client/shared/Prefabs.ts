@@ -6,4 +6,5 @@ export type PrefabName =
     | "tileMap"
     | "npc"
     | "questDisplay"
-    | "worldEditor";
+    | "worldEditor"
+    | "mob";
