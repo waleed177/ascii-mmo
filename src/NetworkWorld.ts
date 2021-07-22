@@ -58,12 +58,12 @@ export class NetworkWorld extends World {
 
     save() {
         console.log("Saved to: " + path.join(__dirname, 'test.json'));
-        fs.writeFile(path.join(__dirname, 'test.json'), JSON.stringify(this.serialize()), ()=>{});
+        fs.writeFile(path.join(__dirname, '../test.json'), JSON.stringify(this.serialize()), ()=>{});
     }
 
     load() {
         try {
-            const data: Array<ServerSerializedGameObject> = JSON.parse(fs.readFileSync(path.join(__dirname, 'test.json'), 'utf8'));
+            const data: Array<ServerSerializedGameObject> = JSON.parse(fs.readFileSync(path.join(__dirname, '../test.json'), 'utf8'));
             data.forEach((objData, index, array) => {
                 var gameObject = this.instantiator.instantiateServerObject(objData);
                 this.addChild(gameObject);
@@ -72,6 +72,31 @@ export class NetworkWorld extends World {
         } catch (err) {
             console.error(err);
         }
+    }
+
+    convertTextFileToTileMapObject(filePath: string): TileMapObject {
+        return this.convertTextToTileMap(fs.readFileSync(path.join(__dirname, filePath), 'utf8'));
+    }
+
+    private convertTextToTileMap(text: string) {
+        let res = new TileMapObject();
+        let lines = text.split("\n");
+
+        let height = lines.length;
+        let width = lines[0].length;
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+            if (line.length > width)
+                width = line.length;
+        }
+        res.setup(width, height, 1);
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+            for (let j = 0; j < line.length; j++) {
+                res.tilemap.setTile(j, i, 0, line[j]);
+            }
+        }
+        return res;
     }
 
     private getFreeId() {

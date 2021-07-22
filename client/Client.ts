@@ -16,7 +16,7 @@ keyboard.hookToWindow();
 
 var socket: Socket = new Socket();
 var world = new NetworkWorld(socket);
-socket.connect("ws://127.0.0.1:3000/server");
+socket.connect((window.location.host.indexOf("asciimmo") >= 0 ? "wss" : "ws") + "://" + window.location.host + "/server");
 
 socket.emit("test", {
     test1: 100,
