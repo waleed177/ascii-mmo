@@ -21,6 +21,7 @@ export class ClientHandler {
     private webSockets: ws;
     private messageHandler: MessageHandler<ClientHandler>;
     private server: Server;
+    public hasKey: boolean = false;
     public userInfo: User;
 
     player = new NetworkPlayer(this);
@@ -35,18 +36,8 @@ export class ClientHandler {
         console.log("New client connected!");        
     }
 
-    setup() {
-        
-    }
-
-    public initPlayerEntity() {
-        this.player.position = this.server.world.spawnPoint;
+    public setup() {
         this.server.world.sendWorldTo(this);
-        this.server.world.addChild(this.player);
-        this.emit('receiveLocalPlayerId', {
-            id: this.player.id
-        } as LocalPlayerIdData);
-        this.setup();
     }
 
     initializeEvents() {
@@ -82,6 +73,12 @@ export class ClientHandler {
 
     login(userInfo: User) {
         this.userInfo = userInfo;
+        
+        this.player.position = this.server.world.spawnPoint;
+        this.server.world.addChild(this.player);
+        this.emit('receiveLocalPlayerId', {
+            id: this.player.id
+        } as LocalPlayerIdData);
         this.player.load();
     }
 }

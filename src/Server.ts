@@ -7,13 +7,16 @@ import { QuestsDisplay } from './QuestsDisplay.js';
 import { WorldEditor } from './WorldEditor.js';
 import mongoose from 'mongoose';
 import { GameObject } from '../client/shared/GameObject.js';
+import fs from 'fs';
+import path from 'path';
 
 export class Server {
     private clients = new Array<ClientHandler>();
     public world = new NetworkWorld(this);
     public inventoryDisplay = new InventoryDisplay();
     public questsDisplay = new QuestsDisplay();
-    
+    public alphaKey: string;
+
     addClient(client: ClientHandler) {
         this.clients.push(client);
     }
@@ -23,7 +26,7 @@ export class Server {
             var clientHandler = new ClientHandler(this, ws);
             clientHandler.initializeEvents();
             this.addClient(clientHandler);
-            clientHandler.initPlayerEntity();
+            clientHandler.setup();
         });
 
         this.world.addChild(new ChatBox());
@@ -36,10 +39,15 @@ export class Server {
             this.world.update();
         }, 100);
 
-        mongoose.connect('mongodb://localhost:27017/asciimmo', {
+        let credentials: {url: string} = JSON.parse(fs.readFileSync(path.join(__dirname, "../credentials.json"), 'utf8'));
+
+        mongoose.connect(credentials.url, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
+
+        let config: {alphaKey: string} = JSON.parse(fs.readFileSync(path.join(__dirname, "../config.json"), 'utf8'));
+        this.alphaKey = config.alphaKey;
     }
 
     broadcast(type: string, data: any, except: ClientHandler[] = null) {
