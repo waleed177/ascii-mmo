@@ -6,6 +6,7 @@ import { InventoryDisplay } from './InventoryDisplay.js';
 import { QuestsDisplay } from './QuestsDisplay.js';
 import { WorldEditor } from './WorldEditor.js';
 import mongoose from 'mongoose';
+import { GameObject } from '../client/shared/GameObject.js';
 
 export class Server {
     private clients = new Array<ClientHandler>();
@@ -41,13 +42,14 @@ export class Server {
         });
     }
 
-    broadcast(type: string, data: any) {
+    broadcast(type: string, data: any, except: ClientHandler[] = null) {
         var data_to_send = JSON.stringify({
             "type": type,
             "json": data
         });
 
         for(var i = 0; i < this.clients.length; i++) {
+            if(except && except.indexOf(this.clients[i]) >= 0) continue;
             this.clients[i].emitString(data_to_send);
         }
     }

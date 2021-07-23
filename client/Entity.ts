@@ -15,8 +15,7 @@ export class Entity extends ClientGameObject {
         super();
         this.position = new Vector3(0, 0, 0);
         this.messageHandler.on("settingPosition", (sender: Socket, data: SettingPositionData) => {
-            if (!this.clientOwned)
-                this.position = new Vector3(data.x, data.y, data.z);
+            this.position = new Vector3(data.x, data.y, data.z);
         });
     }
 
@@ -28,13 +27,14 @@ export class Entity extends ClientGameObject {
 
     }
 
-    protected sendNewPosition() {
+    protected sendNewPosition(position: Vector3 = null) {
+        let pos = position ? position : this.position;
         this.emit(
             'settingPosition',
             {
-                x: this.position.x,
-                y: this.position.y,
-                z: this.position.z
+                x: pos.x,
+                y: pos.y,
+                z: pos.z
             } as SettingPositionData
         )
     }

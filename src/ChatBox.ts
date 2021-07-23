@@ -87,6 +87,13 @@ export class ChatBox extends ServerGameObject {
                         this.world.addChild(mob); 
                         break;
                     }
+                    case "additem": {
+                        sender.player.inventory.addItem({
+                            name: sp[1],
+                            quantity: Number.parseInt(sp[2])
+                        });
+                        break;
+                    }
                     case "register": {
                         let username = sp[1];
                         let password = sp[2];

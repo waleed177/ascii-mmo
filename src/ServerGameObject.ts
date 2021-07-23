@@ -38,14 +38,14 @@ export class ServerGameObject extends GameObject {
 
     }
 
-    emit(type: string, data: any) {
+    emit(type: string, data: any, except: ClientHandler[] = null) {
         this.world.server.broadcast('emitForGameObject', {
             id: this.id,
             json: {
                 type: type,
                 json: data
             }
-        } as EmitForGameObjectData);
+        } as EmitForGameObjectData, except);
     }
 
     emitTo(client: ClientHandler, type: string, data: any) {

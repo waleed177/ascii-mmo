@@ -12,17 +12,6 @@ export class Inventory {
         this.clientHandler = clientHandler;
         this.inventoryDisplay = this.clientHandler.player.world.server.inventoryDisplay;
         
-        this.items = [
-            {
-                name: "FESH",
-                quantity: 10
-            },
-            {
-                name: "FESH22",
-                quantity: 12
-            }
-        ]
-
         this.updateDisplay();
     }
 
@@ -36,7 +25,37 @@ export class Inventory {
     }
 
     useItemId(id: number) {
-        this.items[id].quantity -= 1;
+        let item = this.items[id];
+        item.quantity -= 1;
+        if(item.quantity <= 0) {
+            this.items.splice(id, 1);
+        }
+        this.save();
         this.updateDisplay();
+    }
+
+    addItem(itemData: ItemData) {
+        let found = false;
+        for(let i = 0; i < this.items.length; i++) {
+            if(this.items[i].name == itemData.name) {
+                this.items[i].quantity += itemData.quantity;
+                found = true;
+                break;
+            }
+        }
+        if(!found)
+            this.items.push(itemData);
+        this.save();
+        this.updateDisplay();
+    }
+    
+    load() {
+        this.items = this.clientHandler.userInfo.inventory;
+        this.updateDisplay();
+    }
+
+    save() {
+        this.clientHandler.userInfo.markModified("inventory");
+        this.clientHandler.userInfo.save();
     }
 }

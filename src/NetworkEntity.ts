@@ -1,7 +1,9 @@
+import { GameObject } from '../client/shared/GameObject';
 import { PrefabName } from '../client/shared/Prefabs';
 import { SettingPositionData } from '../client/shared/SettingPositionData';
 import { SpawnGameObjectData } from '../client/shared/SpawnGameObjectData';
 import { Vector3 } from '../client/shared/Vector3';
+import { ClientHandler } from './ClientHandler';
 import { ServerGameObject } from './ServerGameObject';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 
@@ -48,11 +50,11 @@ export class NetworkEntity extends ServerGameObject {
         return v.equals(this.position);
     }
 
-    emitPosition() {
+    emitPosition(except: ClientHandler[] = null) {
         this.emit('settingPosition', {
             x: this.position.x,
             y: this.position.y,
             z: this.position.z
-        } as SettingPositionData);
+        } as SettingPositionData, except);
     }
 }

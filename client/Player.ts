@@ -50,47 +50,47 @@ export class Player extends Entity {
     }
 
     private handleMovement() {
-        let lastPos = this.position.clone();
 
         if (keyboard.isKeyDown("d") || keyboard.isKeyDown("D")) {
-            this.position.x += 1;
-            this.sendNewPosition();
+            this.moveWithCollision(new Vector3(1, 0, 0));
         }
 
         if (keyboard.isKeyDown("a") || keyboard.isKeyDown("A")) {
-            this.position.x -= 1;
-            this.sendNewPosition();
+            this.moveWithCollision(new Vector3(-1, 0, 0));
         }
 
         if (keyboard.isKeyDown("s") || keyboard.isKeyDown("S")) {
-            this.position.y += 1;
-            this.sendNewPosition();
+            this.moveWithCollision(new Vector3(0, 1, 0));
         }
 
         if (keyboard.isKeyDown("w") || keyboard.isKeyDown("W")) {
-            this.position.y -= 1;
-            this.sendNewPosition();
+            this.moveWithCollision(new Vector3(0, -1, 0));
         }
+    }
+
+    private moveWithCollision(delta: Vector3) {
+        let newPos = this.position.add(delta);
+        this.sendNewPosition(newPos);
 
         let collision = false;
-        this.world.findCollisionsWithPoint(this.position).forEach(
+        this.world.findCollisionsWithPoint(newPos).forEach(
             (gameObject, index, array) => {
-                if(gameObject instanceof TileMapObject) {
+                if (gameObject instanceof TileMapObject) {
                     var tile = gameObject.tilemap.getTile(
-                        this.position.x - gameObject.position.x,
-                        this.position.y - gameObject.position.y,
+                        newPos.x - gameObject.position.x,
+                        newPos.y - gameObject.position.y,
                         0
                     );
-    
-                    if(tile != " " && tile != ".") {
+
+                    if (tile != " " && tile != ".") {
                         collision = true;
                     }
                 }
             }
-        )
+        );
 
-        if(collision) {
-            this.position = lastPos;
+        if (!collision) {
+            this.position = newPos;
         }
     }
 }

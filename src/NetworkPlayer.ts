@@ -5,6 +5,7 @@ import { Inventory } from './Inventory';
 import { Quests } from './Quests';
 import { TileMapObject } from './TileMapObject';
 import { Vector3 } from '../client/shared/Vector3';
+import { GameObject } from '../client/shared/GameObject';
 
 export class NetworkPlayer extends NetworkEntity {
     inventory: Inventory;
@@ -21,12 +22,15 @@ export class NetworkPlayer extends NetworkEntity {
         this.messageHandler.on('settingPosition', (sender: ClientHandler, data: SettingPositionData) => {
             if (sender != this.clientHandler) return;
             let collision = false;
+            let collisions = new Array<GameObject>();
             let newPos = new Vector3(data.x, data.y, data.z);
+            let delta = newPos.sub(this.position).abs().sum();
 
-            if(newPos.sub(this.position).abs().sum() > 1) {
+            if(delta > 1) {
                 collision = true;
             } else {
-                collision = this.world.findEntitiesCollidingWithPoint(newPos).length >0;
+                collisions = this.world.findEntitiesCollidingWithPoint(newPos);
+                collision = collisions.length > 0;
             }
             
             if (!collision) {
@@ -37,7 +41,27 @@ export class NetworkPlayer extends NetworkEntity {
                 data.y = this.position.y;
             }
 
-            this.emitPosition();
+            if (delta > 3) {
+                this.emitPosition();
+            } else {
+                this.emitPosition([this.clientHandler]);
+            }
+
+            if (delta <= 1) {
+                collisions.forEach((coll) => {
+                    if(coll instanceof TileMapObject) {
+                        let tile = coll.getTileAtWorldSpace(newPos);
+                        if (tile == "│") {
+                            coll.setTileAtWorldSpace(newPos, " ");
+                            this.inventory.addItem({
+                                name: "|",
+                                quantity: 1
+                            })
+                        }
+                        coll.commitChanges();
+                    }
+                });
+            }
             
         });
     }
@@ -45,5 +69,9 @@ export class NetworkPlayer extends NetworkEntity {
     public ready() {
         this.inventory = new Inventory(this.clientHandler);
         this.quests = new Quests(this.clientHandler);
+    }
+
+    public load() {
+        this.inventory.load();
     }
 }

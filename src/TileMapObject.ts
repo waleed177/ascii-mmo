@@ -58,4 +58,14 @@ export class TileMapObject extends NetworkEntity {
         let point2 = point.sub(this.position);
         return " .".indexOf(this.tilemap.getTile(point2.x, point2.y, point2.z)) == -1;
     }
+
+    getTileAtWorldSpace(point: Vector3) {
+        let point2 = point.sub(this.position);
+        return this.tilemap.getTile(point2.x, point2.y, point2.z);
+    }
+
+    setTileAtWorldSpace(point: Vector3, char: string) {
+        let point2 = point.sub(this.position);
+        this.tilemap.setTile(point2.x, point2.y, point2.z, char);
+    }
 }

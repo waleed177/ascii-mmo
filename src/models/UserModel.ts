@@ -1,5 +1,6 @@
 import { Schema, model, Document} from 'mongoose';
 import bcrypt from 'bcrypt';
+import { ItemData } from '../../client/shared/Item';
 
 export type UserDocument = User & Document<any, any, User>;
 
@@ -7,15 +8,17 @@ export type UserDocument = User & Document<any, any, User>;
 export interface User extends Document {
     username: string,
     password: string,
+    inventory: Array<ItemData>
 }
 
 // 2. Create a Schema corresponding to the document interface.
-const schema = new Schema<User>({
+const userSchema = new Schema<User>({
     username: { type: String, required: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    inventory: { type: [], required: true }
 });
 
-schema.pre('save', function(next) {
+userSchema.pre('save', function(next) {
     var user: UserDocument = this;
     if(!user.isModified('password')) return next();
 
@@ -35,4 +38,4 @@ export function comparePassword(user:UserDocument, candidatePassword: string) {
 
 
 // 3. Create a Model.
-export const UserModel = model<User>('User', schema);
+export const UserModel = model<User>('User', userSchema);

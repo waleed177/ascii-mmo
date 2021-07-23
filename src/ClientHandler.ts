@@ -82,5 +82,6 @@ export class ClientHandler {
 
     login(userInfo: User) {
         this.userInfo = userInfo;
+        this.player.load();
     }
 }
