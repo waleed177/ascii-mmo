@@ -9,6 +9,7 @@ import { Vector3 } from '../client/shared/Vector3';
 import { EmitForGameObjectData } from '../client/shared/EmitForGameObjectData.js'
 import { InventoryUpdatedData } from '../client/shared/InventoryUpdatedData';
 import { DialogueExecutor } from './DialogueExecutor';
+import { User, UserModel } from './models/UserModel';
 
 interface TestType {
     test1: number,
@@ -20,6 +21,8 @@ export class ClientHandler {
     private webSockets: ws;
     private messageHandler: MessageHandler<ClientHandler>;
     private server: Server;
+    public userInfo: User;
+
     player = new NetworkPlayer(this);
 
     public dialogueExecutor: DialogueExecutor;
@@ -75,5 +78,9 @@ export class ClientHandler {
             type: type,
             json: json
         } as ReceivedData));
+    }
+
+    login(userInfo: User) {
+        this.userInfo = userInfo;
     }
 }

@@ -7,6 +7,7 @@ import { GameObject } from '../client/shared/GameObject';
 import { TileMapObject } from './TileMapObject';
 import { Vector3 } from '../client/shared/Vector3';
 import { Mob } from './Mob';
+import { UserModel, User, comparePassword, UserDocument } from './models/UserModel';
 
 export class ChatBox extends ServerGameObject {
     shouldBeSerialized = false;
@@ -86,10 +87,41 @@ export class ChatBox extends ServerGameObject {
                         this.world.addChild(mob); 
                         break;
                     }
+                    case "register": {
+                        let username = sp[1];
+                        let password = sp[2];
+                        let user = new UserModel({
+                            username: username,
+                            password: password
+                        } as User);
+                        user.save();
+                        break;
+                    }
+                    case "login": {
+                        let username = sp[1];
+                        let password = sp[2];
+                        UserModel.findOne({
+                            username: username
+                        }).then((user) => {
+                            if (user && comparePassword(user, password)) {
+                                this.emitTo(sender, 'message', {
+                                    message: "sys> logged in!"
+                                } as ChatMessageData);
+                                sender.login(user);
+                            } else {
+                                this.emitTo(sender, 'message', {
+                                    message: "sys> somethin not workin."
+                                } as ChatMessageData);
+                            }
+                        });
+                        
+                    }
                 }
             } else {
+                let message =  sender.userInfo.username + ": " + data.message;
+                
                 this.emit('message', {
-                    message: "anon: " + data.message
+                    message: message
                 } as ChatMessageData);
             }
         });

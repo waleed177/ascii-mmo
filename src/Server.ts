@@ -3,13 +3,9 @@ import { app } from './app';
 import { NetworkWorld } from './NetworkWorld';
 import { ChatBox } from './ChatBox.js';
 import { InventoryDisplay } from './InventoryDisplay.js';
-import { TileMapObject } from './TileMapObject.js';
-import { NPC } from './NPC.js';
-import { Vector3 } from '../client/shared/Vector3.js';
-import { DialogueBuilder } from './DialogueBuilder';
-import { dialogues } from './NPCData';
 import { QuestsDisplay } from './QuestsDisplay.js';
 import { WorldEditor } from './WorldEditor.js';
+import mongoose from 'mongoose';
 
 export class Server {
     private clients = new Array<ClientHandler>();
@@ -38,6 +34,11 @@ export class Server {
         setInterval(() => {
             this.world.update();
         }, 100);
+
+        mongoose.connect('mongodb://localhost:27017/asciimmo', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
     }
 
     broadcast(type: string, data: any) {
