@@ -6,6 +6,7 @@ import { Quests } from './Quests';
 import { TileMapObject } from './TileMapObject';
 import { Vector3 } from '../client/shared/Vector3';
 import { GameObject } from '../client/shared/GameObject';
+import { tilesInfo } from './TileInfo';
 
 export class NetworkPlayer extends NetworkEntity {
     inventory: Inventory;
@@ -52,12 +53,15 @@ export class NetworkPlayer extends NetworkEntity {
                 collisions.forEach((coll) => {
                     if(coll instanceof TileMapObject) {
                         let tile = coll.getTileAtWorldSpace(newPos);
-                        if (tile == "│") {
-                            coll.setTileAtWorldSpace(newPos, " ");
-                            this.inventory.addItem({
-                                name: "|",
-                                quantity: 1
-                            })
+                        if (tilesInfo.has(tile)) {
+                            let tileInfo = tilesInfo.get(tile);
+                            if (tileInfo.obtainable) {
+                                coll.setTileAtWorldSpace(newPos, " ");
+                                this.inventory.addItem({
+                                    name: tileInfo.name,
+                                    quantity: 1
+                                })
+                            }
                         }
                         coll.commitChanges();
                     }
