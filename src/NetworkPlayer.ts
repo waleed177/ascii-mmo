@@ -12,7 +12,8 @@ export class NetworkPlayer extends NetworkEntity {
     quests: Quests;
     clientHandler: ClientHandler;
     shouldBeSerialized: boolean = false;
-    
+    saving: boolean = false;
+
     constructor(clientHandler: ClientHandler) {
         super();
         this.sprite = 'P';
@@ -64,6 +65,15 @@ export class NetworkPlayer extends NetworkEntity {
             }
             
         });
+    }
+
+    public update() {
+        if (this.clientHandler.userInfo && this.clientHandler.userInfo.isModified() && !this.saving) {
+            this.saving = true;
+            this.clientHandler.userInfo.save().then((user) => {
+                this.saving = false;
+            });
+        }
     }
 
     public ready() {

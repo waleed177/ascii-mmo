@@ -55,7 +55,6 @@ export class Inventory {
     }
 
     save() {
-        this.clientHandler.userInfo.markModified("inventory");
-        this.clientHandler.userInfo.save();
+        this.clientHandler.userInfo.markModified("inventory");       
     }
 }
