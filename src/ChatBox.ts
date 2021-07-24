@@ -8,6 +8,7 @@ import { TileMapObject } from './TileMapObject';
 import { Vector3 } from '../client/shared/Vector3';
 import { Mob } from './Mob';
 import { UserModel, User, comparePassword, UserDocument } from './models/UserModel';
+import { MovingThing } from './MovingThing';
 
 export class ChatBox extends ServerGameObject {
     shouldBeSerialized = false;
@@ -143,6 +144,17 @@ export class ChatBox extends ServerGameObject {
                             let mob = new Mob();
                             mob.position = sender.player.position;
                             this.world.addChild(mob); 
+                            break;
+                        }
+                        case "spawnthing": {
+                            let thing = new MovingThing();
+                            thing.position = sender.player.position;
+                            thing.velocity = new Vector3(
+                                Number.parseInt(sp[1]),
+                                Number.parseInt(sp[2]),
+                                0
+                            )
+                            this.world.addChild(thing); 
                             break;
                         }
                         case "additem": {

@@ -7,4 +7,5 @@ export type PrefabName =
     | "npc"
     | "questDisplay"
     | "worldEditor"
-    | "mob";
+    | "mob"
+    | "movingThing";

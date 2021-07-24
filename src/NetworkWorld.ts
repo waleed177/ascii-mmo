@@ -13,6 +13,7 @@ import { NetworkEntity } from './NetworkEntity';
 import { ServerPrefabInstantiator } from './ServerPrefabInstantiator';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 import { Mob } from './Mob';
+import { MovingThing } from './MovingThing';
 
 type WorldSaveFormat = {
     spawnPoint: Vector3,
@@ -33,6 +34,7 @@ export class NetworkWorld extends World {
         this.instantiator.bind("tileMap", TileMapObject);
         this.instantiator.bind("npc", NPC);
         this.instantiator.bind("mob", Mob);
+        this.instantiator.bind("movingThing", MovingThing);
     }
 
     addChild(gameObject: ServerGameObject) {
