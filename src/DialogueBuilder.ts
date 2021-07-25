@@ -1,8 +1,13 @@
+import { DialogueExecutor } from "./DialogueExecutor";
+import { Quest } from "./Quest";
+
+export type ActionFunction = (dialogueExecutor: DialogueExecutor) => boolean;
+
 export type DialogueType = Array<{
     prompt: string,
     options: Array<{
         display: string,
-        actions: string[]
+        actions: ActionFunction[]
     }>;
 }>;
 export class DialogueBuilder {
@@ -31,7 +36,7 @@ export class DialogueBuilder {
         });
     }
 
-    choice(display: string, ...actions: string[]) {
+    choice(display: string, ...actions: ActionFunction[]) {
         this.dialogue[this.dialogue.length-1].options.push(
             {
                 display: display,
@@ -41,23 +46,42 @@ export class DialogueBuilder {
     }
 
     build() {
-        for(let i = 0; i < this.dialogue.length; i++) {
-            let dialoguePiece = this.dialogue[i];
-            for(let j = 0; j < dialoguePiece.options.length; j++) {
-                let option = dialoguePiece.options[j];
-                for(let k = 0; k < option.actions.length; k++) {
-                    var action = option.actions[k];
-                    if(!action.startsWith("$")) {
-                        option.actions[k] = "L" + this.labels.get(action);
-                    }
-                }
-                
-            }
-        }
-
         return this.dialogue;
     }
 
+    goto(label: string): ActionFunction {
+        let labels = this.labels;
+        return (dialogueExecutor) => {
+            let id = labels.get(label);
+            dialogueExecutor.goto(id);
+            return true;
+        }
+    }
+
+    end(): ActionFunction {
+        return (dialogueExecutor) => {
+            dialogueExecutor.goto(-1);
+            return false;
+        };
+    }
+
+    addQuest(quest: Quest): ActionFunction {
+        return (dialogueExecutor) => {
+            dialogueExecutor.client.player.quests.addQuest(quest);
+            return true;
+        };
+    }
+
+    completeQuest(questName: string, completed: ActionFunction = _ => true, noQuest: ActionFunction = _ => true): ActionFunction {
+        return (dialogueExecutor) => {
+            if(dialogueExecutor.client.player.quests.completeQuest(questName)) {
+                return completed(dialogueExecutor);
+            } else {
+                return noQuest(dialogueExecutor);
+            }
+            return true;
+        };
+    }
 }
 
 /**
