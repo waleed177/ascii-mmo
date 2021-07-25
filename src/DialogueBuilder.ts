@@ -72,15 +72,25 @@ export class DialogueBuilder {
         };
     }
 
-    completeQuest(questName: string, completed: ActionFunction = _ => true, noQuest: ActionFunction = _ => true): ActionFunction {
+    completeQuest(questName: string, successfullyCompleted: ActionFunction = _ => true, noQuest: ActionFunction = _ => true): ActionFunction {
         return (dialogueExecutor) => {
             if(dialogueExecutor.client.player.quests.completeQuest(questName)) {
-                return completed(dialogueExecutor);
+                return successfullyCompleted(dialogueExecutor);
             } else {
                 return noQuest(dialogueExecutor);
             }
             return true;
         };
+    }
+
+    iff(condition: ActionFunction, true_body: ActionFunction, false_body: ActionFunction = _ => true): ActionFunction {
+        return (dialogueExecutor) => {
+            if(condition(dialogueExecutor)) {
+                return true_body(dialogueExecutor);
+            } else {
+                return false_body(dialogueExecutor);
+            }
+        }
     }
 }
 

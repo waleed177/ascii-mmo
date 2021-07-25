@@ -26,10 +26,7 @@ export class Inventory {
 
     useItemId(id: number) {
         let item = this.items[id];
-        item.quantity -= 1;
-        if(item.quantity <= 0) {
-            this.items.splice(id, 1);
-        }
+        
         this.save();
         this.updateDisplay();
     }
@@ -47,6 +44,34 @@ export class Inventory {
             this.items.push(itemData);
         this.save();
         this.updateDisplay();
+    }
+
+    private indexOfItem(name: string): number {
+        for(let i = 0; i < this.items.length; i++) {
+            if(this.items[i].name == name) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    hasItem(name: string, amount: number): boolean {
+        let index = this.indexOfItem(name);
+        if (index == -1) return false;
+        return this.items[index].quantity >= amount;
+    }
+
+    takeItem(name: string, amount: number): boolean {
+        if(!this.hasItem(name, amount)) return false;
+        let index = this.indexOfItem(name);
+        let item = this.items[index];
+        item.quantity -= amount;
+        if(item.quantity <= 0) {
+            this.items.splice(index, 1);
+        }
+        this.save();
+        this.updateDisplay();
+        return true;
     }
     
     load() {
