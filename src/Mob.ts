@@ -12,8 +12,8 @@ export class Mob extends NetworkEntity {
 
     getPrivateData() {
         return {
-            prefab: 'mob' as PrefabName
-        }
+            prefab: 'mob'
+        } as {prefab: PrefabName}
     }
 
     update() {

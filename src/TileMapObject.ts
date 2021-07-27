@@ -5,6 +5,7 @@ import { RecieveTileMapData } from '../client/shared/RecieveTileMapData';
 import { Vector3 } from '../client/shared/Vector3';
 import { NetworkEntity } from './NetworkEntity';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
+import { GameObject } from '../client/shared/GameObject';
 
 export class TileMapObject extends NetworkEntity {
     public tilemap: TileMap;
@@ -14,6 +15,25 @@ export class TileMapObject extends NetworkEntity {
         this.tilemap = new TileMap(width, height, depth);
     }
 
+    setupWithText(text: string) {
+        let lines = text.split("\n");
+
+        let height = lines.length;
+        let width = lines[0].length;
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+            if (line.length > width)
+                width = line.length;
+        }
+        this.setup(width, height, 1);
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+            for (let j = 0; j < line.length; j++) {
+                this.tilemap.setTile(j, i, 0, line[j]);
+            }
+        }
+    }
+    
     deserialize(data: ServerSerializedGameObject) {
         super.deserialize(data);
         let publicData = data.publicData.data as RecieveTileMapData;

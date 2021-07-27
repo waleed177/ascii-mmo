@@ -52,8 +52,9 @@ export class NetworkPlayer extends NetworkEntity {
             if (delta <= 1) {
                 collisions.forEach((coll) => {
                     if(coll instanceof TileMapObject) {
-                        let tile = coll.getTileAtWorldSpace(newPos);
-                        if (tilesInfo.has(tile)) {
+                        coll.processCollisionWith(this, newPos);
+                        //let tile = coll.getTileAtWorldSpace(newPos);
+                        /*if (tilesInfo.has(tile)) {
                             let tileInfo = tilesInfo.get(tile);
                             if (tileInfo.obtainable) {
                                 coll.setTileAtWorldSpace(newPos, " ");
@@ -63,7 +64,8 @@ export class NetworkPlayer extends NetworkEntity {
                                 })
                             }
                         }
-                        coll.commitChanges();
+                        coll.commitChanges();*/
+                        
                     }
                 });
             }

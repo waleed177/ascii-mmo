@@ -100,22 +100,7 @@ export class NetworkWorld extends World {
 
     private convertTextToTileMap(text: string) {
         let res = new TileMapObject();
-        let lines = text.split("\n");
-
-        let height = lines.length;
-        let width = lines[0].length;
-        for (let i = 0; i < lines.length; i++) {
-            let line = lines[i];
-            if (line.length > width)
-                width = line.length;
-        }
-        res.setup(width, height, 1);
-        for (let i = 0; i < lines.length; i++) {
-            let line = lines[i];
-            for (let j = 0; j < line.length; j++) {
-                res.tilemap.setTile(j, i, 0, line[j]);
-            }
-        }
+        res.setupWithText(text);
         return res;
     }
 

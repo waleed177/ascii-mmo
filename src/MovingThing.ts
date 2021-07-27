@@ -14,8 +14,8 @@ export class MovingThing extends NetworkEntity {
 
     getPrivateData() {
         return {
-            prefab: "movingThing" as PrefabName
-        }
+            prefab: "movingThing"
+        } as {prefab: PrefabName}
     }
 
     update() {

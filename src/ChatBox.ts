@@ -9,6 +9,7 @@ import { Vector3 } from '../client/shared/Vector3';
 import { Mob } from './Mob';
 import { UserModel, User, comparePassword, UserDocument } from './models/UserModel';
 import { MovingThing } from './MovingThing';
+import { SpaceShip } from './SpaceShip';
 
 export class ChatBox extends ServerGameObject {
     shouldBeSerialized = false;
@@ -144,6 +145,12 @@ export class ChatBox extends ServerGameObject {
                             let mob = new Mob();
                             mob.position = sender.player.position;
                             this.world.addChild(mob); 
+                            break;
+                        }
+                        case "spawnship": {
+                            let thing = new SpaceShip();
+                            thing.position = sender.player.position;
+                            this.world.addChild(thing); 
                             break;
                         }
                         case "spawnthing": {

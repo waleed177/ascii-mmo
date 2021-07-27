@@ -5,6 +5,7 @@ import { NetworkWorld } from './NetworkWorld';
 import { EmitForGameObjectData } from '../client/shared/EmitForGameObjectData';
 import { MessageHandler } from '../client/shared/MessageHandler';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
+import { Vector3 } from '../client/shared/Vector3';
 
 export class ServerGameObject extends GameObject {
     world: NetworkWorld;
@@ -56,5 +57,10 @@ export class ServerGameObject extends GameObject {
                 json: data
             }
         } as EmitForGameObjectData);
+    }
+
+
+    processCollisionWith(obj: ServerGameObject, pos: Vector3) {
+
     }
 }

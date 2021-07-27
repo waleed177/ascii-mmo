@@ -8,4 +8,5 @@ export type PrefabName =
     | "questDisplay"
     | "worldEditor"
     | "mob"
-    | "movingThing";
+    | "movingThing"
+    | "spaceship";
