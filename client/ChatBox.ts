@@ -1,3 +1,23 @@
+//#region PREAMBLE
+/*
+    This is an ASCII MMO game.
+    Copyright (C) 2021 waleed177 <potatoxel@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, version 3 of the
+    License only.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+//#endregion
+
 import { ChatMessageData } from "./shared/ChatMessageData.js";
 import { keyboard, renderer } from "./Client.js";
 import { ClientGameObject } from "./ClientGameObject.js";
@@ -32,9 +52,13 @@ export class ChatBox extends ClientGameObject {
                 if(ev.key == "Backspace") {
                     this.currentSendText = this.currentSendText.substring(0, this.currentSendText.length-1);
                 } else if(ev.key == "Enter") {
-                    this.emit('message', {
-                        message: this.currentSendText
-                    } as ChatMessageData);
+                    if (this.currentSendText == "/client_credits") {
+                        this.messages.push("client> Copyright (C) 2021 waleed177");
+                    } else {
+                        this.emit('message', {
+                            message: this.currentSendText
+                        } as ChatMessageData);
+                    }
                     this.currentSendText = "";
                     this.typingMode = false;
                 } else if (ev.key.length == 1 && this.currentSendText.length <= this.size.x -6 ) {
