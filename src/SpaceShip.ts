@@ -22,19 +22,69 @@ import { PrefabName } from '../client/shared/Prefabs';
 import { Vector3 } from '../client/shared/Vector3';
 import { ServerGameObject } from './ServerGameObject';
 import { TileMapObject } from './TileMapObject';
-
+import { trim_amount } from '../client/shared/Utils';
+import { NetworkPlayer } from './NetworkPlayer';
 export class SpaceShip extends TileMapObject {
+    private sprites = new Map<string, string>();
+    private arrow_positions = new Map<string, Map<string, Vector3>>();
+    private current_sprite: string;
 
     constructor() {
         super();
-        this.setupWithText(`
-#########
-#   ^   #
+        this.sprites.set("up",trim_amount(`
+  #####
+ #  ^  #
 # <   > #
 #       
-#   V   #
+#   v   #
 #########
-        `.trim());
+`       , 1));
+
+        this.sprites.set("down",trim_amount(`
+#########
+#   ^   #
+#       
+# <   > #
+ #  v  #
+  #####
+`       , 1));
+
+        this.sprites.set("right",trim_amount(`
+####
+#   #
+#  ^ #
+#<  >#
+#  v #
+#   #
+## #
+`       , 1));
+
+        this.sprites.set("left",trim_amount(`
+  ####
+ #   #
+# ^  #
+#<  >#
+# v  #
+ #   #
+  # ##
+`       , 1));
+        this.current_sprite = "up";
+        this.setupWithText(this.sprites.get("up"));
+
+        this.sprites.forEach((value, key, map) => {
+            let lines = value.split("\n");
+            let position_map = new Map<string, Vector3>();
+            this.arrow_positions.set(key, position_map);
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                for (let j = 0; j < line.length; j++) {
+                    let char = line[j];
+                    if ("^><v".indexOf(char) >= 0) {
+                        position_map.set(char, new Vector3(j, i, 0));
+                    }
+                }
+            }
+        });
     }
 
     getPrivateData() {
@@ -44,16 +94,56 @@ export class SpaceShip extends TileMapObject {
     }
 
     processCollisionWith(obj: ServerGameObject, pos: Vector3) {
-        let tile = this.getTileAtWorldSpace(pos);
-        if (tile == "^") {
-            this.position.y -= 1;
-        } else if (tile == "V") {
-            this.position.y += 1;
-        } else if (tile == ">") {
-            this.position.x += 1;
-        } else if (tile == "<") {
-            this.position.x -= 1;
+        if(obj instanceof NetworkPlayer) {
+            let tile = this.getTileAtWorldSpace(pos);
+            let local_pos = pos.sub(this.position);
+            let mlocal_pos = new Vector3(local_pos.y, local_pos.x, local_pos.z);
+            let dir = new Vector3(0, 0, 0);
+            if (tile == "^") {
+                this.setupWithText(this.sprites.get("up"));
+                this.commitChanges();
+                /*if (this.current_sprite == "down" || this.current_sprite == "up") {
+                    this.position = obj.position.sub(local_pos).add(new Vector3(0, -2, 0));
+                } else { 
+                    this.position = obj.position.sub(mlocal_pos).add(new Vector3(0, -2, 0));
+                }*/
+                dir = new Vector3(0, -2, 0);
+                this.current_sprite = "up";
+            } else if (tile == "v") {
+                this.setupWithText(this.sprites.get("down"));
+                this.commitChanges();
+                /*if (this.current_sprite == "down" || this.current_sprite == "up") {
+                    this.position = obj.position.sub(local_pos).add(new Vector3(0, 2, 0));
+                } else { 
+                    this.position = obj.position.sub(mlocal_pos).add(new Vector3(0, 2, 0));
+                }*/
+                dir = new Vector3(0, 2, 0);
+                this.current_sprite = "down";
+            } else if (tile == ">") {
+                this.setupWithText(this.sprites.get("right"));
+                this.commitChanges();
+                /*if (this.current_sprite == "left" || this.current_sprite == "right") {
+                    this.position = obj.position.sub(local_pos).add(new Vector3(2, 0, 0));
+                } else { 
+                    this.position = obj.position.sub(mlocal_pos).add(new Vector3(2, 0, 0));
+                }*/
+                dir = new Vector3(2, 0, 0);
+                this.current_sprite = "right";
+            } else if (tile == "<") {
+                this.setupWithText(this.sprites.get("left"));
+                this.commitChanges();
+                /*if (this.current_sprite == "left" || this.current_sprite == "right") {
+                    this.position = obj.position.sub(local_pos).add(new Vector3(-2, 0, 0));
+                } else { 
+                    this.position = obj.position.sub(mlocal_pos).add(new Vector3(-2, 0, 0));
+                }*/
+                dir = new Vector3(-2, 0, 0);
+                this.current_sprite = "left";
+            }
+            if ("^><v".indexOf(tile) >= 0) {
+                this.position = obj.position.sub(this.arrow_positions.get(this.current_sprite).get(tile)).add(dir);
+            }
+            this.emitPosition();
         }
-        this.emitPosition();
     }
 }

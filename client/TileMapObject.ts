@@ -40,6 +40,7 @@ export class TileMapObject extends Entity {
                 this.tilemap = new TileMap(data.width, data.height, data.depth);
             }
             this.tilemap.useMap(data.tilemap);
+            this.size = new Vector3(data.width, data.height, data.depth);
         });
     }
 
