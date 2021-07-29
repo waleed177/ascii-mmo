@@ -25,6 +25,7 @@ import { TileMapObject } from './TileMapObject';
 import { trim_amount } from '../client/shared/Utils';
 import { NetworkPlayer } from './NetworkPlayer';
 import { DirectionSymbol, direction_symbol_add, subtract_direction_symbols } from '../client/shared/DirectionUtils';
+import { NetworkEntity } from './NetworkEntity';
 
 export class SpaceShip extends TileMapObject {
     private sprites = new Map<string, string>();
@@ -136,7 +137,7 @@ export class SpaceShip extends TileMapObject {
                 var new_position = obj.position.sub(this.arrow_positions.get(this.current_sprite).get(tile)).add(dir.mul(2));
 
                 colls.forEach((gameObject, index, array) => {
-                    if (gameObject instanceof NetworkPlayer && gameObject != obj) {
+                    if (gameObject instanceof NetworkEntity && gameObject != obj) {
                         let offset = gameObject.position.sub(this.position);
                        
 

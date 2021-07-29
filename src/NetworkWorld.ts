@@ -153,7 +153,7 @@ export class NetworkWorld extends World {
     findEntitiesCollidingWith(gameObject: ServerGameObject) {
         let res: Array<NetworkEntity> = [];
         this.children.forEach((other, key, map) => {
-            if(other instanceof NetworkEntity && gameObject.collidesWith(other)) 
+            if(other instanceof NetworkEntity && other != gameObject && gameObject.collidesWith(other)) 
                 res.push(other);
         });
         return res;
