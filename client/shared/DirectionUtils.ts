@@ -18,12 +18,36 @@
 */
 //#endregion
 
-export function trim_amount(str: String, amount: number, dir: "left" | "right" | "both") {
-    if (dir == "left") {
-        return str.substr(amount, str.length-amount);
-    } else if(dir == "right") {
-        return str.substr(0, str.length-amount);
-    } else if(dir == "both") {
-        return str.substr(amount, str.length-2*amount);
+export type DirectionSymbol = ">" | "^" | "<" | "v";
+
+export var direction_symbol_to_number = {
+    ">": 0,
+    "^": 1,
+    "<": 2,
+    "v": 3
+}
+
+export var number_to_direction_symbol = {
+    0: ">",
+    1: "^",
+    2: "<",
+    3: "v"
+}
+
+export function subtract_direction_symbols(symbol1: DirectionSymbol, symbol2: DirectionSymbol) {
+    var num1 = direction_symbol_to_number[symbol1];
+    var num2 = direction_symbol_to_number[symbol2];
+    var res = num1-num2 % 4;
+    if (res < 0) {
+        return 3-res;
+    } else {
+        return res;
     }
 }
+
+export function direction_symbol_add(symbol1: DirectionSymbol, amount: number) {
+    return number_to_direction_symbol[
+        (Math.abs(direction_symbol_to_number[symbol1] + amount) % 4) as 0 | 1 | 2 | 3
+    ];
+}
+

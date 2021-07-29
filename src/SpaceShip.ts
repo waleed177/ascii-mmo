@@ -24,6 +24,8 @@ import { ServerGameObject } from './ServerGameObject';
 import { TileMapObject } from './TileMapObject';
 import { trim_amount } from '../client/shared/Utils';
 import { NetworkPlayer } from './NetworkPlayer';
+import { DirectionSymbol, direction_symbol_add, subtract_direction_symbols } from '../client/shared/DirectionUtils';
+
 export class SpaceShip extends TileMapObject {
     private sprites = new Map<string, string>();
     private arrow_positions = new Map<string, Map<string, Vector3>>();
@@ -31,25 +33,23 @@ export class SpaceShip extends TileMapObject {
 
     constructor() {
         super();
-        this.sprites.set("up",trim_amount(`
+        this.sprites.set("^",trim_amount(`
   #####
  #  ^  #
 # <   > #
 #       
 #   v   #
-#########
-`       , 1));
+#########`, 1, "left"));
 
-        this.sprites.set("down",trim_amount(`
+        this.sprites.set("v",trim_amount(`
 #########
 #   ^   #
 #       
 # <   > #
  #  v  #
-  #####
-`       , 1));
+  #####`, 1, "left"));
 
-        this.sprites.set("right",trim_amount(`
+        this.sprites.set(">",trim_amount(`
 ####
 #   #
 #  ^ #
@@ -57,19 +57,18 @@ export class SpaceShip extends TileMapObject {
 #  v #
 #   #
 ## #
-`       , 1));
+`       , 1, "left"));
 
-        this.sprites.set("left",trim_amount(`
+        this.sprites.set("<",trim_amount(`
   ####
  #   #
 # ^  #
 #<  >#
 # v  #
  #   #
-  # ##
-`       , 1));
-        this.current_sprite = "up";
-        this.setupWithText(this.sprites.get("up"));
+  # ##`, 1, "left"));
+        this.current_sprite = "^";
+        this.setupWithText(this.sprites.get("^"));
 
         this.sprites.forEach((value, key, map) => {
             let lines = value.split("\n");
@@ -100,52 +99,60 @@ export class SpaceShip extends TileMapObject {
             let mlocal_pos = new Vector3(local_pos.y, local_pos.x, local_pos.z);
             let dir = new Vector3(0, 0, 0);
 
-            let vertical_flip = this.current_sprite == "up" && tile == "v" || this.current_sprite == "down" && tile == "up";
-            let horizontal_flip = this.current_sprite == "left" && tile == ">" || this.current_sprite == "right" && tile == "<";
+            let vertical_flip = this.current_sprite == "^" && tile == "v" || this.current_sprite == "v" && tile == "^";
+            let horizontal_flip = this.current_sprite == "<" && tile == ">" || this.current_sprite == ">" && tile == "<";
+            
+            let rotation_number = subtract_direction_symbols(tile as DirectionSymbol, this.current_sprite as DirectionSymbol);
+
+            console.log("----");
+            console.log(vertical_flip);
+            console.log(horizontal_flip);
+            console.log(rotation_number);
 
             if (tile == "^") {
-                this.setupWithText(this.sprites.get("up"));
+                this.setupWithText(this.sprites.get("^"));
                 this.commitChanges();
                 dir = new Vector3(0, -2, 0);
-                this.current_sprite = "up";
             } else if (tile == "v") {
-                this.setupWithText(this.sprites.get("down"));
+                this.setupWithText(this.sprites.get("v"));
                 this.commitChanges();
                 dir = new Vector3(0, 2, 0);
-                this.current_sprite = "down";
             } else if (tile == ">") {
-                this.setupWithText(this.sprites.get("right"));
+                this.setupWithText(this.sprites.get(">"));
                 this.commitChanges();
                 dir = new Vector3(2, 0, 0);
-                this.current_sprite = "right";
             } else if (tile == "<") {
-                this.setupWithText(this.sprites.get("left"));
+                this.setupWithText(this.sprites.get("<"));
                 this.commitChanges();
                 dir = new Vector3(-2, 0, 0);
-                this.current_sprite = "left";
             }
+            this.current_sprite = tile;
             
             //todo figure this out later.
             if ("^><v".indexOf(tile) >= 0) {
+                var new_position = obj.position.sub(this.arrow_positions.get(this.current_sprite).get(tile)).add(dir);
+                var delta = new_position.sub(this.position);
+
                 this.world.findEntitiesCollidingWith(this).forEach((gameObject, index, array) => {
                     if (gameObject instanceof NetworkPlayer && gameObject != obj) {
                         let offset = gameObject.position.sub(this.position);
-                        if(vertical_flip) {
-                            gameObject.position = offset.pmul(new Vector3(1, -1, 1)).add(this.position).add(new Vector3(0, this.tilemap.height, 0));
-                        }
-                        if(horizontal_flip) {
-                            gameObject.position = offset.pmul(new Vector3(-1, 1, 1)).add(this.position).add(new Vector3(this.tilemap.width, 0, 0));
+                       
+
+                        if(vertical_flip || horizontal_flip) {
+                            gameObject.position = offset.pmul(new Vector3(-1, -1, 1)).add(this.position).add(new Vector3(this.tilemap.width-1, this.tilemap.height-1, 0));
+                        } else if(rotation_number != 0) {
+                            console.log("HERE" + this.current_sprite);
+                            if(rotation_number==3) {
+                                gameObject.position = offset.swapxy().pmul(new Vector3(-1, 1, 1)).add(this.position).add(new Vector3(this.tilemap.height-1, 0, 0));
+                            } else {
+                                gameObject.position = offset.swapxy().pmul(new Vector3(1, -1, 1)).add(this.position).add(new Vector3(0, this.tilemap.width-1, 0));
+                            }
                         }
                         gameObject.position = gameObject.position.add(dir.div(2));
                         gameObject.emitPosition();
                     }
                 });
-            }
-
-           
-
-            if ("^><v".indexOf(tile) >= 0) {
-                this.position = obj.position.sub(this.arrow_positions.get(this.current_sprite).get(tile)).add(dir);
+                this.position = new_position;
             }
             this.emitPosition();
         }
