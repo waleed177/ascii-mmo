@@ -66,6 +66,13 @@ export class NetworkEntity extends ServerGameObject {
         }
     }
 
+    collidesWith(obj: ServerGameObject): boolean {
+        if(obj instanceof NetworkEntity) {
+            return this.collidesWithPoint(obj.position);
+        }
+        return false;
+    }
+
     collidesWithPoint(v: Vector3) {
         return v.equals(this.position);
     }

@@ -34,6 +34,7 @@ import { ServerPrefabInstantiator } from './ServerPrefabInstantiator';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 import { Mob } from './Mob';
 import { MovingThing } from './MovingThing';
+import { GameObject } from '../client/shared/GameObject';
 
 type WorldSaveFormat = {
     spawnPoint: Vector3,
@@ -145,6 +146,15 @@ export class NetworkWorld extends World {
         this.children.forEach((gameObject, key, map) => {
             if(gameObject instanceof NetworkEntity && gameObject.preciseCollidesWithPoint(position)) 
                 res.push(gameObject);
+        });
+        return res;
+    }
+
+    findEntitiesCollidingWith(gameObject: ServerGameObject) {
+        let res: Array<NetworkEntity> = [];
+        this.children.forEach((other, key, map) => {
+            if(other instanceof NetworkEntity && gameObject.collidesWith(other)) 
+                res.push(other);
         });
         return res;
     }

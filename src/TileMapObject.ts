@@ -87,6 +87,12 @@ export class TileMapObject extends NetworkEntity {
         } as RecieveTileMapData);
     }
 
+    collidesWith(obj: ServerGameObject): boolean {
+        if(obj instanceof NetworkEntity) {
+            return this.collidesWithPoint(obj.position);
+        }
+    }
+
     collidesWithPoint(point: Vector3) {
         return this.position.x <= point.x && point.x < this.position.x + this.tilemap.width
             && this.position.y <= point.y && point.y < this.position.y + this.tilemap.height;

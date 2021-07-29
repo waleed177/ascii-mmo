@@ -99,47 +99,51 @@ export class SpaceShip extends TileMapObject {
             let local_pos = pos.sub(this.position);
             let mlocal_pos = new Vector3(local_pos.y, local_pos.x, local_pos.z);
             let dir = new Vector3(0, 0, 0);
+
+            let vertical_flip = this.current_sprite == "up" && tile == "v" || this.current_sprite == "down" && tile == "up";
+            let horizontal_flip = this.current_sprite == "left" && tile == ">" || this.current_sprite == "right" && tile == "<";
+
             if (tile == "^") {
                 this.setupWithText(this.sprites.get("up"));
                 this.commitChanges();
-                /*if (this.current_sprite == "down" || this.current_sprite == "up") {
-                    this.position = obj.position.sub(local_pos).add(new Vector3(0, -2, 0));
-                } else { 
-                    this.position = obj.position.sub(mlocal_pos).add(new Vector3(0, -2, 0));
-                }*/
                 dir = new Vector3(0, -2, 0);
                 this.current_sprite = "up";
             } else if (tile == "v") {
                 this.setupWithText(this.sprites.get("down"));
                 this.commitChanges();
-                /*if (this.current_sprite == "down" || this.current_sprite == "up") {
-                    this.position = obj.position.sub(local_pos).add(new Vector3(0, 2, 0));
-                } else { 
-                    this.position = obj.position.sub(mlocal_pos).add(new Vector3(0, 2, 0));
-                }*/
                 dir = new Vector3(0, 2, 0);
                 this.current_sprite = "down";
             } else if (tile == ">") {
                 this.setupWithText(this.sprites.get("right"));
                 this.commitChanges();
-                /*if (this.current_sprite == "left" || this.current_sprite == "right") {
-                    this.position = obj.position.sub(local_pos).add(new Vector3(2, 0, 0));
-                } else { 
-                    this.position = obj.position.sub(mlocal_pos).add(new Vector3(2, 0, 0));
-                }*/
                 dir = new Vector3(2, 0, 0);
                 this.current_sprite = "right";
             } else if (tile == "<") {
                 this.setupWithText(this.sprites.get("left"));
                 this.commitChanges();
-                /*if (this.current_sprite == "left" || this.current_sprite == "right") {
-                    this.position = obj.position.sub(local_pos).add(new Vector3(-2, 0, 0));
-                } else { 
-                    this.position = obj.position.sub(mlocal_pos).add(new Vector3(-2, 0, 0));
-                }*/
                 dir = new Vector3(-2, 0, 0);
                 this.current_sprite = "left";
             }
+            
+            //todo figure this out later.
+            if ("^><v".indexOf(tile) >= 0) {
+                this.world.findEntitiesCollidingWith(this).forEach((gameObject, index, array) => {
+                    if (gameObject instanceof NetworkPlayer && gameObject != obj) {
+                        let offset = gameObject.position.sub(this.position);
+                        if(vertical_flip) {
+                            gameObject.position = offset.pmul(new Vector3(1, -1, 1)).add(this.position).add(new Vector3(0, this.tilemap.height, 0));
+                        }
+                        if(horizontal_flip) {
+                            gameObject.position = offset.pmul(new Vector3(-1, 1, 1)).add(this.position).add(new Vector3(this.tilemap.width, 0, 0));
+                        }
+                        gameObject.position = gameObject.position.add(dir.div(2));
+                        gameObject.emitPosition();
+                    }
+                });
+            }
+
+           
+
             if ("^><v".indexOf(tile) >= 0) {
                 this.position = obj.position.sub(this.arrow_positions.get(this.current_sprite).get(tile)).add(dir);
             }
