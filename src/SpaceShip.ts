@@ -44,7 +44,7 @@ export class SpaceShip extends TileMapObject {
         this.sprites.set("v",trim_amount(`
 #########
 #   ^   #
-#       
+        #
 # <   > #
  #  v  #
   #####`, 1, "left"));
@@ -53,20 +53,23 @@ export class SpaceShip extends TileMapObject {
 ####
 #   #
 #  ^ #
+#    #
 #<  >#
+#    #
 #  v #
 #   #
-## #
-`       , 1, "left"));
+## #`       , 1, "left"));
 
         this.sprites.set("<",trim_amount(`
-  ####
+  # ##
  #   #
 # ^  #
+#    #
 #<  >#
+#    #
 # v  #
  #   #
-  # ##`, 1, "left"));
+  ####`, 1, "left"));
         this.current_sprite = "^";
         this.setupWithText(this.sprites.get("^"));
 
@@ -104,51 +107,50 @@ export class SpaceShip extends TileMapObject {
             
             let rotation_number = subtract_direction_symbols(tile as DirectionSymbol, this.current_sprite as DirectionSymbol);
 
-            console.log("----");
-            console.log(vertical_flip);
-            console.log(horizontal_flip);
-            console.log(rotation_number);
+            var colls =  this.world.findEntitiesCollidingWith(this);
 
             if (tile == "^") {
                 this.setupWithText(this.sprites.get("^"));
                 this.commitChanges();
-                dir = new Vector3(0, -2, 0);
+                dir = new Vector3(0, -1, 0);
             } else if (tile == "v") {
                 this.setupWithText(this.sprites.get("v"));
                 this.commitChanges();
-                dir = new Vector3(0, 2, 0);
+                dir = new Vector3(0, 1, 0);
             } else if (tile == ">") {
                 this.setupWithText(this.sprites.get(">"));
                 this.commitChanges();
-                dir = new Vector3(2, 0, 0);
+                dir = new Vector3(1, 0, 0);
             } else if (tile == "<") {
                 this.setupWithText(this.sprites.get("<"));
                 this.commitChanges();
-                dir = new Vector3(-2, 0, 0);
+                dir = new Vector3(-1, 0, 0);
             }
-            this.current_sprite = tile;
-            
+
             //todo figure this out later.
             if ("^><v".indexOf(tile) >= 0) {
-                var new_position = obj.position.sub(this.arrow_positions.get(this.current_sprite).get(tile)).add(dir);
-                var delta = new_position.sub(this.position);
+                console.log(rotation_number);
 
-                this.world.findEntitiesCollidingWith(this).forEach((gameObject, index, array) => {
+                this.current_sprite = tile;
+
+                var new_position = obj.position.sub(this.arrow_positions.get(this.current_sprite).get(tile)).add(dir.mul(2));
+
+                colls.forEach((gameObject, index, array) => {
                     if (gameObject instanceof NetworkPlayer && gameObject != obj) {
                         let offset = gameObject.position.sub(this.position);
                        
 
                         if(vertical_flip || horizontal_flip) {
-                            gameObject.position = offset.pmul(new Vector3(-1, -1, 1)).add(this.position).add(new Vector3(this.tilemap.width-1, this.tilemap.height-1, 0));
-                        } else if(rotation_number != 0) {
-                            console.log("HERE" + this.current_sprite);
+                            gameObject.position = offset.pmul(new Vector3(-1, -1, 1)).add(new_position).add(new Vector3(this.tilemap.width-1, this.tilemap.height-1, 0));
+                        } else if(rotation_number >0) {
                             if(rotation_number==3) {
-                                gameObject.position = offset.swapxy().pmul(new Vector3(-1, 1, 1)).add(this.position).add(new Vector3(this.tilemap.height-1, 0, 0));
+                                gameObject.position = new Vector3(this.tilemap.width-offset.y-1, offset.x, offset.z).add(new_position);
                             } else {
-                                gameObject.position = offset.swapxy().pmul(new Vector3(1, -1, 1)).add(this.position).add(new Vector3(0, this.tilemap.width-1, 0));
+                                gameObject.position = new Vector3(offset.y, this.tilemap.height-offset.x-1, offset.z).add(new_position);
                             }
+                        } else {
+                            gameObject.position = gameObject.position.add(dir);
                         }
-                        gameObject.position = gameObject.position.add(dir.div(2));
                         gameObject.emitPosition();
                     }
                 });

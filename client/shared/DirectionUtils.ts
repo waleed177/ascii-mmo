@@ -37,9 +37,9 @@ export var number_to_direction_symbol = {
 export function subtract_direction_symbols(symbol1: DirectionSymbol, symbol2: DirectionSymbol) {
     var num1 = direction_symbol_to_number[symbol1];
     var num2 = direction_symbol_to_number[symbol2];
-    var res = num1-num2 % 4;
+    var res = (num1-num2) % 4;
     if (res < 0) {
-        return 3-res;
+        return 4+res;
     } else {
         return res;
     }
