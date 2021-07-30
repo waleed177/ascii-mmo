@@ -40,7 +40,7 @@ export class Mob extends NetworkEntity {
         let lastPos = this.position.clone();
         this.position.x += Math.round(Math.random()*2 - 1);
         this.position.y += Math.round(Math.random()*2 - 1);
-        if(this.world.findEntitiesCollidingWithPoint(this.position).length >0)
+        if(this.world.findEntitiesPreciseCollidingWithPoint(this.position).length >0)
             this.position = lastPos;
         this.emitPosition();
     }

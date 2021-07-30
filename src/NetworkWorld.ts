@@ -141,10 +141,19 @@ export class NetworkWorld extends World {
         return res;
     }
 
-    findEntitiesCollidingWithPoint(position: Vector3) {
+    findEntitiesPreciseCollidingWithPoint(position: Vector3) {
         let res: Array<NetworkEntity> = [];
         this.children.forEach((gameObject, key, map) => {
             if(gameObject instanceof NetworkEntity && gameObject.preciseCollidesWithPoint(position)) 
+                res.push(gameObject);
+        });
+        return res;
+    }
+
+    findEntitiesCollidingWithPoint(position: Vector3) {
+        let res: Array<NetworkEntity> = [];
+        this.children.forEach((gameObject, key, map) => {
+            if(gameObject instanceof NetworkEntity && gameObject.collidesWithPoint(position)) 
                 res.push(gameObject);
         });
         return res;

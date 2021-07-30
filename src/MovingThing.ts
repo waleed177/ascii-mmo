@@ -41,7 +41,7 @@ export class MovingThing extends NetworkEntity {
     update() {
         let lastPos = this.position.clone();
         this.position = this.position.add(this.velocity);
-        if(this.world.findEntitiesCollidingWithPoint(this.position).length >0) {
+        if(this.world.findEntitiesPreciseCollidingWithPoint(this.position).length >0) {
             this.position = lastPos;
             this.velocity = this.velocity.mul(-1);
         }

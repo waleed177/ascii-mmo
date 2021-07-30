@@ -51,8 +51,16 @@ export class NetworkPlayer extends NetworkEntity {
             if(delta > 1) {
                 collision = true;
             } else {
-                collisions = this.world.findEntitiesCollidingWithPoint(newPos);
-                collision = collisions.length > 0;
+                collisions = this.world.findEntitiesPreciseCollidingWithPoint(newPos);
+                let collisions_with_bounds = this.world.findEntitiesCollidingWithPoint(newPos);
+                let in_bounds_with_tilemap = false;
+                for(let i = 0; i < collisions_with_bounds.length; i++) {
+                    if (collisions_with_bounds[i] instanceof TileMapObject) {
+                        in_bounds_with_tilemap = true;
+                        break;
+                    }
+                }
+                collision = collisions.length > 0 || !in_bounds_with_tilemap;
             }
             
             if (!collision) {
@@ -70,8 +78,10 @@ export class NetworkPlayer extends NetworkEntity {
             }
 
             if (delta <= 1) {
+                var coll_with_tilemap = false;
                 collisions.forEach((coll) => {
                     if(coll instanceof TileMapObject) {
+                        coll_with_tilemap = true;
                         coll.processCollisionWith(this, newPos);
                         //let tile = coll.getTileAtWorldSpace(newPos);
                         /*if (tilesInfo.has(tile)) {
