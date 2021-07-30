@@ -137,7 +137,7 @@ export class SpaceShip extends TileMapObject {
                 var new_position = obj.position.sub(this.arrow_positions.get(this.current_sprite).get(tile)).add(dir.mul(2));
 
                 colls.forEach((gameObject, index, array) => {
-                    if (gameObject instanceof NetworkEntity && gameObject != obj) {
+                    if (gameObject instanceof NetworkEntity && !(gameObject instanceof TileMapObject) && gameObject != obj) {
                         let offset = gameObject.position.sub(this.position);
                        
 

@@ -35,6 +35,7 @@ import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 import { Mob } from './Mob';
 import { MovingThing } from './MovingThing';
 import { GameObject } from '../client/shared/GameObject';
+import { SpaceShip } from './SpaceShip';
 
 type WorldSaveFormat = {
     spawnPoint: Vector3,
@@ -56,6 +57,7 @@ export class NetworkWorld extends World {
         this.instantiator.bind("npc", NPC);
         this.instantiator.bind("mob", Mob);
         this.instantiator.bind("movingThing", MovingThing);
+        this.instantiator.bind("spaceship", SpaceShip);
     }
 
     addChild(gameObject: ServerGameObject) {
