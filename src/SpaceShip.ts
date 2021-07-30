@@ -26,11 +26,12 @@ import { trim_amount } from '../client/shared/Utils';
 import { NetworkPlayer } from './NetworkPlayer';
 import { DirectionSymbol, direction_symbol_add, subtract_direction_symbols } from '../client/shared/DirectionUtils';
 import { NetworkEntity } from './NetworkEntity';
+import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 
 export class SpaceShip extends TileMapObject {
     private sprites = new Map<string, string>();
     private arrow_positions = new Map<string, Map<string, Vector3>>();
-    private current_sprite: string;
+    private direction: DirectionSymbol;
 
     constructor() {
         super();
@@ -71,7 +72,7 @@ export class SpaceShip extends TileMapObject {
 # v  #
  #   #
   ####`, 1, "left"));
-        this.current_sprite = "^";
+        this.direction = "^";
         this.setupWithText(this.sprites.get("^"));
 
         this.sprites.forEach((value, key, map) => {
@@ -90,6 +91,19 @@ export class SpaceShip extends TileMapObject {
         });
     }
 
+    deserialize(data: ServerSerializedGameObject) {
+        super.deserialize(data);
+        let publicData = data.publicData.data as {direction: DirectionSymbol};
+        this.direction = publicData.direction;
+    }
+
+    getPublicData() {
+        let res = super.getPublicData();
+        let data = res.data as {direction: DirectionSymbol};
+        data.direction = this.direction;
+        return res;
+    }
+
     getPrivateData() {
         return {
             prefab: "spaceship"
@@ -103,10 +117,10 @@ export class SpaceShip extends TileMapObject {
             let mlocal_pos = new Vector3(local_pos.y, local_pos.x, local_pos.z);
             let dir = new Vector3(0, 0, 0);
 
-            let vertical_flip = this.current_sprite == "^" && tile == "v" || this.current_sprite == "v" && tile == "^";
-            let horizontal_flip = this.current_sprite == "<" && tile == ">" || this.current_sprite == ">" && tile == "<";
+            let vertical_flip = this.direction == "^" && tile == "v" || this.direction == "v" && tile == "^";
+            let horizontal_flip = this.direction == "<" && tile == ">" || this.direction == ">" && tile == "<";
             
-            let rotation_number = subtract_direction_symbols(tile as DirectionSymbol, this.current_sprite as DirectionSymbol);
+            let rotation_number = subtract_direction_symbols(tile as DirectionSymbol, this.direction as DirectionSymbol);
 
             var colls =  this.world.findEntitiesCollidingWith(this);
 
@@ -132,9 +146,9 @@ export class SpaceShip extends TileMapObject {
             if ("^><v".indexOf(tile) >= 0) {
                 console.log(rotation_number);
 
-                this.current_sprite = tile;
+                this.direction = tile as DirectionSymbol;
 
-                var new_position = obj.position.sub(this.arrow_positions.get(this.current_sprite).get(tile)).add(dir.mul(2));
+                var new_position = obj.position.sub(this.arrow_positions.get(this.direction).get(tile)).add(dir.mul(2));
 
                 colls.forEach((gameObject, index, array) => {
                     if (gameObject instanceof NetworkEntity && !(gameObject instanceof TileMapObject) && gameObject != obj) {
