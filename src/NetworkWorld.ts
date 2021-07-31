@@ -68,6 +68,13 @@ export class NetworkWorld extends World {
         this.server.broadcast('spawnGameObject', gameObject.getPublicData());
     }
 
+    queueRemoveChild(gameObject: ServerGameObject) {
+        super.queueRemoveChild(gameObject);
+        this.server.broadcast('removeGameObject', {
+            id: gameObject.id
+        } as RemoveGameObjectData);
+    }
+
     removeChild(gameObject: ServerGameObject) {
         super.removeChild(gameObject);
         this.server.broadcast('removeGameObject', {

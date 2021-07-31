@@ -27,6 +27,7 @@ import { NetworkPlayer } from './NetworkPlayer';
 import { DirectionSymbol, direction_symbol_add, direction_symbol_to_vector, subtract_direction_symbols } from '../client/shared/DirectionUtils';
 import { NetworkEntity } from './NetworkEntity';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
+import { Laser } from './Laser';
 
 export class SpaceShip extends TileMapObject {
     private sprites = new Map<string, string>();
@@ -142,14 +143,20 @@ export class SpaceShip extends TileMapObject {
                 dir = new Vector3(-1, 0, 0);
             } else if (tile == "o") {
                 let collisions = this.world.raycast(obj.position, direction_symbol_to_vector[this.direction], 20, this);
+                let distance = 20;
                 if (collisions.length > 0) {
-                    console.log(collisions);
                     let tilemap = collisions[0].gameObject;
                     if(tilemap instanceof TileMapObject) {
+                        distance = Math.round(collisions[0].position.sub(obj.position).length())-2;
+                        if(distance < 0) distance = 0;
                         tilemap.damageTilesAtWorldSpace(collisions[0].position, 2);
                         tilemap.commitChanges();
                     }
                 }
+
+                let laser = new Laser(distance);
+                laser.position = obj.position.add(direction_symbol_to_vector[this.direction].mul(2));
+                this.world.addChild(laser);
             }
 
             //todo figure this out later.

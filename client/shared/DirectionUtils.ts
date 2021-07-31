@@ -46,17 +46,24 @@ export var number_to_direction_symbol = {
 export function subtract_direction_symbols(symbol1: DirectionSymbol, symbol2: DirectionSymbol) {
     var num1 = direction_symbol_to_number[symbol1];
     var num2 = direction_symbol_to_number[symbol2];
-    var res = (num1-num2) % 4;
+    return direction_number_modulo(num1-num2);
+}
+
+export function direction_number_modulo(num: number): 0 | 1 | 2 | 3{
+    let res = num % 4;
     if (res < 0) {
-        return 4+res;
+        return 4+res as 0 | 1 | 2 | 3;
     } else {
-        return res;
+        return res as 0 | 1 | 2 | 3;
     }
 }
 
 export function direction_symbol_add(symbol1: DirectionSymbol, amount: number) {
     return number_to_direction_symbol[
-        (Math.abs(direction_symbol_to_number[symbol1] + amount) % 4) as 0 | 1 | 2 | 3
+        direction_number_modulo(direction_symbol_to_number[symbol1] + amount)
     ];
 }
 
+export function rotate_symbol(symbol: string, amount: number) {
+    
+}
