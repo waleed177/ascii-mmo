@@ -18,7 +18,7 @@
 */
 //#endregion
 
-import { Vector3 } from "./Vector3";
+import { Vector3 } from "./Vector3.js";
 
 export type DirectionSymbol = ">" | "^" | "<" | "v";
 
@@ -43,6 +43,15 @@ export var number_to_direction_symbol = {
     3: "v"
 }
 
+var rotate_symbol_right = new Map([
+    ["^", ">"],
+    [">", "v"],
+    ["v", "<"],
+    ["<", "^"],
+    ["│", "─"],
+    ["─", "│"],
+]);
+
 export function subtract_direction_symbols(symbol1: DirectionSymbol, symbol2: DirectionSymbol) {
     var num1 = direction_symbol_to_number[symbol1];
     var num2 = direction_symbol_to_number[symbol2];
@@ -65,5 +74,11 @@ export function direction_symbol_add(symbol1: DirectionSymbol, amount: number) {
 }
 
 export function rotate_symbol(symbol: string, amount: number) {
-    
+    let amount_cleaned = direction_number_modulo(amount);
+    let res = symbol;
+    if(rotate_symbol_right.has(res))
+        for(let i = 0; i < amount_cleaned; i++) {
+            res = rotate_symbol_right.get(res);
+        }
+    return res;
 }

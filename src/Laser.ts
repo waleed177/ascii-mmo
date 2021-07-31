@@ -27,12 +27,14 @@ export class Laser extends TileMapObject {
     saving: boolean = false;
     private life: number = 3;
 
-    constructor(length:number) {
+    constructor(length:number, rotation: number) {
         super();
         this.prefab = "tileMap";
         this.sprite = " ";
         
-        this.setupWithText("||\n".repeat(length) + "vv");
+       
+        this.setupWithText("─".repeat(length) + ">");
+        this.tilemap.rotateRight(-rotation);
     }
 
     update() { 

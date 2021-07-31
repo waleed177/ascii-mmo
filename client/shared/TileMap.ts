@@ -18,6 +18,8 @@
 */
 //#endregion
 
+import {direction_number_modulo, rotate_symbol} from "./DirectionUtils.js";
+
 export class TileMap {
     public tilemap: Array<Array<Array<string>>>;
     public width: number;
@@ -25,13 +27,17 @@ export class TileMap {
     public depth: number;
 
     constructor(width: number, height: number, depth: number) {
+        this.initializeTilemap(width, height, depth);
+    }
+
+    private initializeTilemap(width: number, height: number, depth: number) {
         this.tilemap = new Array<Array<Array<string>>>();
-        
-        for(let x = 0; x < width; x++) {
+
+        for (let x = 0; x < width; x++) {
             let row = new Array<Array<string>>();
-            for(let y = 0; y < height; y++) {
+            for (let y = 0; y < height; y++) {
                 let thingy = new Array<string>();
-                for(let z = 0; z < depth; z++) {
+                for (let z = 0; z < depth; z++) {
                     thingy.push(" ");
                 }
                 row.push(thingy);
@@ -79,5 +85,21 @@ export class TileMap {
 
     useMap(tilemap: string[][][]) {
         this.tilemap = tilemap;
+    }
+
+    rotateRightOnce() {
+        let old_tilemap = this.tilemap;
+        this.initializeTilemap(this.height, this.width, this.depth);
+        for(let x = 0; x < this.height; x++)
+            for(let y = 0; y < this.width; y++)
+                for(let z = 0; z < this.depth; z++)
+                    this.setTile(this.width-y-1, x, z, rotate_symbol(old_tilemap[x][y][z], 1));
+    }
+
+    rotateRight(amount: number) {
+        let amount_cleaned = direction_number_modulo(amount);
+        for(let i = 0; i < amount_cleaned; i++) {
+            this.rotateRightOnce();
+        }
     }
 }

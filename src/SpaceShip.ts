@@ -24,7 +24,7 @@ import { ServerGameObject } from './ServerGameObject';
 import { TileMapObject } from './TileMapObject';
 import { trim_amount } from '../client/shared/Utils';
 import { NetworkPlayer } from './NetworkPlayer';
-import { DirectionSymbol, direction_symbol_add, direction_symbol_to_vector, subtract_direction_symbols } from '../client/shared/DirectionUtils';
+import { DirectionSymbol, direction_symbol_add, direction_symbol_to_number, direction_symbol_to_vector, subtract_direction_symbols } from '../client/shared/DirectionUtils';
 import { NetworkEntity } from './NetworkEntity';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 import { Laser } from './Laser';
@@ -154,8 +154,13 @@ export class SpaceShip extends TileMapObject {
                     }
                 }
 
-                let laser = new Laser(distance);
-                laser.position = obj.position.add(direction_symbol_to_vector[this.direction].mul(2));
+                let direction_vector = direction_symbol_to_vector[this.direction];
+                let laser = new Laser(distance, direction_symbol_to_number[this.direction]);
+                if(this.direction == ">" || this.direction  == "v") {
+                    laser.position = obj.position.add(direction_vector.mul(2));
+                } else {
+                    laser.position = obj.position.add(direction_vector.mul(distance+2));
+                }
                 this.world.addChild(laser);
             }
 
