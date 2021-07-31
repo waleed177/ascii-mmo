@@ -24,7 +24,7 @@ import { ServerGameObject } from './ServerGameObject';
 import { TileMapObject } from './TileMapObject';
 import { trim_amount } from '../client/shared/Utils';
 import { NetworkPlayer } from './NetworkPlayer';
-import { DirectionSymbol, direction_symbol_add, subtract_direction_symbols } from '../client/shared/DirectionUtils';
+import { DirectionSymbol, direction_symbol_add, direction_symbol_to_vector, subtract_direction_symbols } from '../client/shared/DirectionUtils';
 import { NetworkEntity } from './NetworkEntity';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 
@@ -37,7 +37,7 @@ export class SpaceShip extends TileMapObject {
         super();
         this.sprites.set("^",trim_amount(`
   #####
- #  ^  #
+ #  ^o #
 # <   > #
 #       
 #   v   #
@@ -48,7 +48,7 @@ export class SpaceShip extends TileMapObject {
 #   ^   #
         #
 # <   > #
- #  v  #
+ # ov  #
   #####`, 1, "left"));
 
         this.sprites.set(">",trim_amount(`
@@ -57,7 +57,7 @@ export class SpaceShip extends TileMapObject {
 #  ^ #
 #    #
 #<  >#
-#    #
+#   o#
 #  v #
 #   #
 ## #`       , 1, "left"));
@@ -66,7 +66,7 @@ export class SpaceShip extends TileMapObject {
   # ##
  #   #
 # ^  #
-#    #
+#o   #
 #<  >#
 #    #
 # v  #
@@ -140,6 +140,16 @@ export class SpaceShip extends TileMapObject {
                 this.setupWithText(this.sprites.get("<"));
                 this.commitChanges();
                 dir = new Vector3(-1, 0, 0);
+            } else if (tile == "o") {
+                let collisions = this.world.raycast(obj.position, direction_symbol_to_vector[this.direction], 20, this);
+                if (collisions.length > 0) {
+                    console.log(collisions);
+                    let tilemap = collisions[0].gameObject;
+                    if(tilemap instanceof TileMapObject) {
+                        tilemap.damageTilesAtWorldSpace(collisions[0].position, 2);
+                        tilemap.commitChanges();
+                    }
+                }
             }
 
             //todo figure this out later.

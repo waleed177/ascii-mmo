@@ -36,6 +36,7 @@ import { Mob } from './Mob';
 import { MovingThing } from './MovingThing';
 import { GameObject } from '../client/shared/GameObject';
 import { SpaceShip } from './SpaceShip';
+import { direction_symbol_to_number } from '../client/shared/DirectionUtils';
 
 type WorldSaveFormat = {
     spawnPoint: Vector3,
@@ -168,5 +169,27 @@ export class NetworkWorld extends World {
                 res.push(other);
         });
         return res;
+    }
+
+    //TODO: Optimize it cuz im lazy rn.
+    raycast (origin: Vector3, direction: Vector3, max_steps: number, except: ServerGameObject): Array<{gameObject: ServerGameObject, position: Vector3}> {
+        let current_position = origin;
+        for(let i = 0; i < max_steps; i++) {
+            let collisions = this.findEntitiesPreciseCollidingWithPoint(current_position);
+            let res = [];
+            for(let j = 0; j < collisions.length; j++) {
+                if(except != collisions[j]) {
+                    res.push({
+                        gameObject: collisions[j],
+                        position: current_position
+                    });
+                }
+            }
+            if(res.length > 0) {
+                return res;
+            }
+            current_position = current_position.add(direction);
+        }
+        return [];
     }
 }

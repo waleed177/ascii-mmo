@@ -18,6 +18,8 @@
 */
 //#endregion
 
+import { Vector3 } from "./Vector3";
+
 export type DirectionSymbol = ">" | "^" | "<" | "v";
 
 export var direction_symbol_to_number = {
@@ -25,6 +27,13 @@ export var direction_symbol_to_number = {
     "^": 1,
     "<": 2,
     "v": 3
+}
+
+export var direction_symbol_to_vector = {
+    ">": new Vector3(1, 0, 0),
+    "^": new Vector3(0, -1, 0),
+    "<": new Vector3(-1, 0, 0),
+    "v": new Vector3(0, 1, 0)
 }
 
 export var number_to_direction_symbol = {

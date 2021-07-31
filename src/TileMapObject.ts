@@ -114,4 +114,16 @@ export class TileMapObject extends NetworkEntity {
         let point2 = point.sub(this.position);
         this.tilemap.setTile(point2.x, point2.y, point2.z, char);
     }
+
+    damageTileAtWorldSpace(position: Vector3) {
+        this.setTileAtWorldSpace(position, ' ');
+    }
+
+    damageTilesAtWorldSpace(position: Vector3, radius: number) {
+        for(let x = position.x-radius; x < position.x+radius; x++)
+            for(let y = position.y-radius; y < position.y+radius; y++)
+                for(let z = position.z-radius; z < position.z+radius; z++)
+                    this.damageTileAtWorldSpace(new Vector3(x,y,z));
+    }
+
 }
