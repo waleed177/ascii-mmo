@@ -57,14 +57,8 @@ export class Player extends Entity {
 
             renderer.cameraPosition.z = this.cameraZ;
 
-            if(keyboard.isKeyDown("e")) {
-                let res = this.world.findEntitiesWithinRadius(this.position, 1);
-                for(let i = 0; i < res.length; i++) {
-                    let entity = res[i];
-                    if (entity instanceof NPC) {
-                        entity.talk();
-                    }
-                }
+            if(keyboard.isKeyJustDown("e")) {
+                this.emit("useClosestEntity", {});
             }
         }
     }

@@ -26,6 +26,7 @@ import { DialogueExecutor } from './DialogueExecutor';
 import { dialogues } from './NPCData';
 import { ServerGameObject } from './ServerGameObject';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
+import { ClientHandler } from './ClientHandler';
 
 export class NPC extends NetworkEntity {
     private dialogue: DialogueType;
@@ -52,12 +53,6 @@ export class NPC extends NetworkEntity {
     }
 
     ready() {
-        this.messageHandler.on("talk", (sender, data) => {
-            sender.dialogueExecutor = new DialogueExecutor(sender, this.dialogue);
-            this.emitTo(sender, "newDialogue", sender.dialogueExecutor.getCurrentPromptData());
-            this.emitTo(sender, "talk", {});
-        });
-
         this.messageHandler.on("use", (sender, data: UseChoiceData) => {
             this.emitTo(sender, "newDialogue", sender.dialogueExecutor.useOption(data.id));
         });
@@ -67,5 +62,11 @@ export class NPC extends NetworkEntity {
         return {
             dialogueName: this.dialogueName
         };
+    }
+
+    use(clientHandler: ClientHandler) {
+        clientHandler.dialogueExecutor = new DialogueExecutor(clientHandler, this.dialogue);
+        this.emitTo(clientHandler, "newDialogue", clientHandler.dialogueExecutor.getCurrentPromptData());
+        this.emitTo(clientHandler, "talk", {});
     }
 }

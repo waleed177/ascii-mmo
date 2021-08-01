@@ -55,4 +55,7 @@ setInterval(() => {
 
     context.clearRect(0,0, canvas.width, canvas.height);
     renderer.render();
+
+    keyboard.update();
+
 }, 100);

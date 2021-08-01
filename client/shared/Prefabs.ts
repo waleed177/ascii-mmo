@@ -29,4 +29,5 @@ export type PrefabName =
     | "worldEditor"
     | "mob"
     | "movingThing"
-    | "spaceship";
+    | "spaceship"
+    | "chest";

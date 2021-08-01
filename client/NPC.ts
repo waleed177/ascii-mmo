@@ -47,6 +47,8 @@ export class NPC extends Entity {
         this.messageHandler.on("newDialogue", (sender, data: NPCDialogueData) => {
             if(data == null){
                 this.isTalking = false;
+                keyboard.claimOwnership("dialogue");
+                this.talkingDebounce = 5;
             } else {
                 this.currentQuestion = data.currentQuestion;
                 this.currentOptions = data.currentOptions;
@@ -81,6 +83,10 @@ export class NPC extends Entity {
     update() {
         if (this.talkingDebounce > 0)
             this.talkingDebounce -= 1;
+        else if(this.talkingDebounce == 0) {
+            keyboard.releaseOwnership("dialogue");
+            this.talkingDebounce = -1;
+        }
     }
     
     guiDraw() {
@@ -109,10 +115,5 @@ export class NPC extends Entity {
                 );
             }
         }
-    }
-
-    talk() {
-        if(this.talkingDebounce <= 0)
-            this.emit("talk", {});
     }
 }

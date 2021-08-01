@@ -18,24 +18,31 @@
 */
 //#endregion
 
-import { ClientGameObject } from './ClientGameObject.js';
-import { Entity } from './Entity.js';
-import { ListDisplayHelper } from './ListDisplayHelper.js';
-import { RecieveItemListData } from './shared/RecieveItemListData.js';
-import { SpawnGameObjectData } from './shared/SpawnGameObjectData.js';
-import { UseItemData } from './shared/UseItemData.js';
-import { Vector2 } from './shared/Vector2.js';
+import { ClientGameObject } from "./ClientGameObject.js";
+import { Entity } from "./Entity.js";
+import { ListDisplayHelper } from "./ListDisplayHelper.js";
+import { RecieveItemListData } from "./shared/RecieveItemListData.js";
+import { SpawnGameObjectData } from "./shared/SpawnGameObjectData.js";
+import { UseItemData } from "./shared/UseItemData.js";
+import { Vector3 } from "./shared/Vector3.js";
 
-export class UsableListDisplay extends ClientGameObject {
+
+export class Chest extends Entity {
     private listDisplayHelper: ListDisplayHelper;
-
+    private showGUI: boolean = false;
+    
     constructor() {
         super();
         this.listDisplayHelper = new ListDisplayHelper();
         this.listDisplayHelper.initKeyboard();
         this.listDisplayHelper.onUse = (cursorLocation) => { this.onUse(cursorLocation) };
+        this.listDisplayHelper.onEndUseKeyboard = () => this.showGUI = false;
         this.messageHandler.on("recieveItems", (sender, data: RecieveItemListData) => {
             this.listDisplayHelper.displayItems = data.displayItems;
+        });
+        this.messageHandler.on("open", (sender, data) => {
+            this.listDisplayHelper.useListKeyboard();
+            this.showGUI = true;
         });
     }
 
@@ -51,11 +58,15 @@ export class UsableListDisplay extends ClientGameObject {
         this.listDisplayHelper.displayItems = data.displayItems;
     }
 
-    drawList(position: Vector2) {
-        this.listDisplayHelper.drawList(position);
+    guiDraw(){
+        if(this.showGUI) {
+            this.listDisplayHelper.drawList(new Vector3(15, 15, 0));
+        }
     }
 
     useList() {
         this.listDisplayHelper.useListKeyboard();
     }
+
+    
 }

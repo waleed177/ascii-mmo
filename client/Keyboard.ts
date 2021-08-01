@@ -26,7 +26,9 @@ type KeyboardEventFunctionAndData = {
 type OwnerType = object | string;
 
 export class Keyboard {
+
     private keys: Map<string, boolean>;
+    private justPressedKeys: Map<string, boolean>;
     private currentScope: OwnerType;
     private scopeStack: Array<OwnerType> = new Array<OwnerType>();
     private keyboardOwner: OwnerType;
@@ -35,11 +37,13 @@ export class Keyboard {
 
     constructor() {
         this.keys = new Map<string, boolean>();
+        this.justPressedKeys = new Map<string, boolean>();
     }
 
     public hookToWindow() {
         window.addEventListener("keydown", (ev: KeyboardEvent) => {
             this.keys.set(ev.key, true);
+            this.justPressedKeys.set(ev.key, true);
             for(let i = 0; i < this.keyDownListeners.length; i++) {
                 var keyDownListener = this.keyDownListeners[i];
                 if(keyDownListener.scope == this.keyboardOwner || this.keyboardOwner == null) 
@@ -48,6 +52,7 @@ export class Keyboard {
         });
         window.addEventListener("keyup", (ev: KeyboardEvent) => {
             this.keys.set(ev.key, false);
+            this.justPressedKeys.set(ev.key, true);
             for(let i = 0; i < this.keyUpListeners.length; i++) {
                 var keyUpListener = this.keyUpListeners[i];
                 if(keyUpListener.scope == this.keyboardOwner || this.keyboardOwner == null) 
@@ -65,6 +70,10 @@ export class Keyboard {
 
     public isKeyDown(key: string) {
         return (this.currentScope == this.keyboardOwner || this.keyboardOwner == null) && this.keys.get(key);
+    }
+
+    public isKeyJustDown(key: string) {
+        return (this.currentScope == this.keyboardOwner || this.keyboardOwner == null) && this.justPressedKeys.get(key);
     }
 
     public startScope(name: OwnerType) {
@@ -93,5 +102,9 @@ export class Keyboard {
     public releaseOwnership(name: OwnerType) {
         if (this.keyboardOwner == name) 
             this.keyboardOwner = null;
+    }
+
+    update() {
+        this.justPressedKeys.clear();
     }
 }

@@ -30,6 +30,7 @@ import { Mob } from './Mob';
 import { UserModel, User, comparePassword, UserDocument } from './models/UserModel';
 import { MovingThing } from './MovingThing';
 import { SpaceShip } from './SpaceShip';
+import { Chest } from './Chest';
 
 export class ChatBox extends ServerGameObject {
     shouldBeSerialized = false;
@@ -174,6 +175,12 @@ export class ChatBox extends ServerGameObject {
                         }
                         case "spawnship": {
                             let thing = new SpaceShip();
+                            thing.position = sender.player.position;
+                            this.world.addChild(thing); 
+                            break;
+                        }
+                        case "spawnchest": {
+                            let thing = new Chest();
                             thing.position = sender.player.position;
                             this.world.addChild(thing); 
                             break;

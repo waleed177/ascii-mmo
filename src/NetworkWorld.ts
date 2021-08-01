@@ -37,6 +37,7 @@ import { MovingThing } from './MovingThing';
 import { GameObject } from '../client/shared/GameObject';
 import { SpaceShip } from './SpaceShip';
 import { direction_symbol_to_number } from '../client/shared/DirectionUtils';
+import { Chest } from './Chest';
 
 type WorldSaveFormat = {
     spawnPoint: Vector3,
@@ -59,6 +60,7 @@ export class NetworkWorld extends World {
         this.instantiator.bind("mob", Mob);
         this.instantiator.bind("movingThing", MovingThing);
         this.instantiator.bind("spaceship", SpaceShip);
+        this.instantiator.bind("chest", Chest);
     }
 
     addChild(gameObject: ServerGameObject) {

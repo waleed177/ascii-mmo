@@ -27,6 +27,7 @@ import { TileMapObject } from './TileMapObject';
 import { Vector3 } from '../client/shared/Vector3';
 import { GameObject } from '../client/shared/GameObject';
 import { tilesInfo } from './TileInfo';
+import { NPC } from './NPC';
 
 export class NetworkPlayer extends NetworkEntity {
     inventory: Inventory;
@@ -100,6 +101,14 @@ export class NetworkPlayer extends NetworkEntity {
                 });
             }
             
+        });
+
+        this.messageHandler.on("useClosestEntity", (sender, data) => {
+            let res = this.world.findEntitiesWithinRadius(sender.player.position, 1);
+            for(let i = 0; i < res.length; i++) {
+                let entity = res[i];
+                entity.use(sender);
+            }
         });
     }
 

@@ -22,6 +22,7 @@ import { EmitForGameObjectData } from "./shared/EmitForGameObjectData.js";
 import { Entity } from "./Entity.js";
 import { Player } from "./Player.js";
 import { Socket } from "./Socket.js";
+import { Chest } from './Chest.js'
 import { SpawnGameObjectData } from "./shared/SpawnGameObjectData.js";
 import { World } from "./shared/World.js";
 import { LocalPlayerIdData } from "./shared/LocalPlayerIdData.js";
@@ -53,6 +54,7 @@ export class NetworkWorld extends World {
         this.instantiator.bind("npc", NPC);
         this.instantiator.bind("questDisplay", QuestDisplay);
         this.instantiator.bind("worldEditor", WorldEditor);
+        this.instantiator.bind("chest", Chest);
 
         socket.on("emitForGameObject", (data: EmitForGameObjectData) => {
             this.children.get(data.id).messageHandler.handle(socket, data.json);

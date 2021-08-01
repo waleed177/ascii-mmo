@@ -84,4 +84,11 @@ export class NetworkEntity extends ServerGameObject {
             z: this.position.z
         } as SettingPositionData, except);
     }
+
+    /**
+     * Override this if the entity is needed to be usable by a client.
+     */
+    use(clientHandler: ClientHandler) {
+        
+    }
 }
