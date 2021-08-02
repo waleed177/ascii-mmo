@@ -24,29 +24,16 @@ import { ClientHandler } from './ClientHandler';
 import { InventoryDisplay } from './InventoryDisplay';
 
 export class Inventory {
-    private items = new Array<ItemData>();
+    public items = new Array<ItemData>();
     private clientHandler: ClientHandler;
-    private inventoryDisplay: InventoryDisplay;
+    public updateDisplay: () => void;
 
     constructor(clientHandler: ClientHandler) {
         this.clientHandler = clientHandler;
-        this.inventoryDisplay = this.clientHandler.player.world.server.inventoryDisplay;
-        
-        this.updateDisplay();
     }
 
-    private updateDisplay() {
-        this.inventoryDisplay.emitInventoryUpdate(
-            this.clientHandler,
-            {
-                items: this.items
-            } as InventoryUpdatedData
-        );
-    }
 
-    useItemId(id: number) {
-        let item = this.items[id];
-        
+    useItemId(id: number) {        
         this.save();
         this.updateDisplay();
     }
@@ -93,6 +80,10 @@ export class Inventory {
         this.updateDisplay();
         return true;
     }
+
+    getItemName(location: number) {
+        return this.items[location].name;
+    }
     
     load() {
         this.items = this.clientHandler.userInfo.inventory;
@@ -100,6 +91,7 @@ export class Inventory {
     }
 
     save() {
-        this.clientHandler.userInfo.markModified("inventory");       
+        if(this.clientHandler != null)
+            this.clientHandler.userInfo.markModified("inventory");       
     }
 }

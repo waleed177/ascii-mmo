@@ -28,6 +28,7 @@ import { Vector3 } from '../client/shared/Vector3';
 import { GameObject } from '../client/shared/GameObject';
 import { tilesInfo } from './TileInfo';
 import { NPC } from './NPC';
+import { InventoryUpdatedData } from '../client/shared/InventoryUpdatedData';
 
 export class NetworkPlayer extends NetworkEntity {
     inventory: Inventory;
@@ -123,6 +124,16 @@ export class NetworkPlayer extends NetworkEntity {
 
     public ready() {
         this.inventory = new Inventory(this.clientHandler);
+        this.inventory.updateDisplay = () => {
+            this.world.server.inventoryDisplay.emitInventoryUpdate(
+                this.clientHandler,
+                {
+                    items: this.inventory.items
+                } as InventoryUpdatedData
+            );
+        }
+        this.inventory.updateDisplay();
+
         this.quests = new Quests(this.clientHandler);
     }
 
