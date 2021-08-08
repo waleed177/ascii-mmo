@@ -25,7 +25,7 @@ import { Inventory } from './Inventory';
 import { NetworkEntity } from './NetworkEntity';
 
 export class Chest extends NetworkEntity {
-    private inventory: Inventory;
+    public inventory: Inventory;
 
     constructor() {
         super();

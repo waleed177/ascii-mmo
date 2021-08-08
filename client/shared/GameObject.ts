@@ -29,9 +29,20 @@ export class GameObject {
     public messageHandler = new MessageHandler();
     public id: number;
     public clientOwned: boolean = false;
+    private everyFunctions: Array<{
+        func: () => void,
+        period: number,
+        timeLeft: number
+    }> = [];
 
     update() {
-
+        this.everyFunctions.forEach((value, index, array) => {
+            value.timeLeft -= 1;
+            if (value.timeLeft <= 0) {
+                value.func();
+                value.timeLeft = value.period;
+            }
+        });
     }
 
     draw() {
@@ -60,5 +71,13 @@ export class GameObject {
 
     public preciseCollidesWithPoint(position: Vector3) {
         return false;
+    }
+
+    public every(period: number, func: () => void) {
+        this.everyFunctions.push({
+            period: period,
+            func: func,
+            timeLeft: 0
+        });
     }
 }

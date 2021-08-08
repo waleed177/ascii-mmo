@@ -111,4 +111,21 @@ export class NetworkEntity extends ServerGameObject {
             }
         });
     }
+
+    get4NeighborsVectors() {
+        return [
+            this.position.add(new Vector3(1, 0, 0)),
+            this.position.add(new Vector3(-1, 0, 0)),
+            this.position.add(new Vector3(0, 1, 0)),
+            this.position.add(new Vector3(0, -1, 0))
+        ]
+    }
+
+    get4Neighbors() {
+        let res: Array<NetworkEntity> = [];
+        this.get4NeighborsVectors().forEach((value, index, array) => {
+            res.push(...this.world.findEntitiesCollidingWithPoint(value))
+        });
+        return res;
+    }
 }

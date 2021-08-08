@@ -31,6 +31,7 @@ import { UserModel, User, comparePassword, UserDocument } from './models/UserMod
 import { MovingThing } from './MovingThing';
 import { SpaceShip } from './SpaceShip';
 import { Chest } from './Chest';
+import { ResourceGenerator } from './ResourceGenerator';
 
 export class ChatBox extends ServerGameObject {
     shouldBeSerialized = false;
@@ -181,6 +182,12 @@ export class ChatBox extends ServerGameObject {
                         }
                         case "spawnchest": {
                             let thing = new Chest();
+                            thing.position = sender.player.position;
+                            this.world.addChild(thing); 
+                            break;
+                        }
+                        case "spawnres": {
+                            let thing = new ResourceGenerator();
                             thing.position = sender.player.position;
                             this.world.addChild(thing); 
                             break;
