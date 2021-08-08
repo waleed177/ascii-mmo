@@ -91,4 +91,24 @@ export class NetworkEntity extends ServerGameObject {
     use(clientHandler: ClientHandler) {
         
     }
+
+    rotateAndMovePositionsOfEntities(entities:Array<NetworkEntity>, except: (gameObject: GameObject) => boolean, rotation_amount: 0 | 1 | 2 | 3, new_position: Vector3, width: number, height: number) {
+        let delta = new_position.sub(this.position);
+        entities.forEach((gameObject, index, array) => {
+            if (gameObject instanceof NetworkEntity && !except(gameObject) ) {
+                let offset = gameObject.position.sub(this.position);
+               
+                if(rotation_amount == 2) {
+                    gameObject.position = offset.pmul(new Vector3(-1, -1, 1)).add(new_position).add(new Vector3(width-1, height-1, 0));
+                } else if(rotation_amount==3) {
+                    gameObject.position = new Vector3(width-offset.y-1, offset.x, offset.z).add(new_position);
+                } else if (rotation_amount == 1) {
+                    gameObject.position = new Vector3(offset.y, height-offset.x-1, offset.z).add(new_position);
+                } else {
+                    gameObject.position = gameObject.position.add(delta);
+                }
+                gameObject.emitPosition();
+            }
+        });
+    }
 }

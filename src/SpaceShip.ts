@@ -25,71 +25,24 @@ import { TileMapObject } from './TileMapObject';
 import { trim_amount } from '../client/shared/Utils';
 import { NetworkPlayer } from './NetworkPlayer';
 import { DirectionSymbol, direction_symbol_add, direction_symbol_to_number, direction_symbol_to_vector, subtract_direction_symbols } from '../client/shared/DirectionUtils';
-import { NetworkEntity } from './NetworkEntity';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 import { Laser } from './Laser';
 
 export class SpaceShip extends TileMapObject {
-    private sprites = new Map<string, string>();
     private arrow_positions = new Map<string, Map<string, Vector3>>();
     private direction: DirectionSymbol;
 
     constructor() {
         super();
-        this.sprites.set("^",trim_amount(`
+
+        this.direction = "^";
+        this.setupWithText(trim_amount(`
   #####
  #  ^o #
 # <   > #
 #       
 #   v   #
 #########`, 1, "left"));
-
-        this.sprites.set("v",trim_amount(`
-#########
-#   ^   #
-        #
-# <   > #
- # ov  #
-  #####`, 1, "left"));
-
-        this.sprites.set(">",trim_amount(`
-####
-#   #
-#  ^ #
-#    #
-#<  >#
-#   o#
-#  v #
-#   #
-## #`       , 1, "left"));
-
-        this.sprites.set("<",trim_amount(`
-  # ##
- #   #
-# ^  #
-#o   #
-#<  >#
-#    #
-# v  #
- #   #
-  ####`, 1, "left"));
-        this.direction = "^";
-        this.setupWithText(this.sprites.get("^"));
-
-        this.sprites.forEach((value, key, map) => {
-            let lines = value.split("\n");
-            let position_map = new Map<string, Vector3>();
-            this.arrow_positions.set(key, position_map);
-            for (let i = 0; i < lines.length; i++) {
-                let line = lines[i];
-                for (let j = 0; j < line.length; j++) {
-                    let char = line[j];
-                    if ("^><v".indexOf(char) >= 0) {
-                        position_map.set(char, new Vector3(j, i, 0));
-                    }
-                }
-            }
-        });
     }
 
     deserialize(data: ServerSerializedGameObject) {
@@ -114,34 +67,14 @@ export class SpaceShip extends TileMapObject {
     processCollisionWith(obj: ServerGameObject, pos: Vector3) {
         if(obj instanceof NetworkPlayer) {
             let tile = this.getTileAtWorldSpace(pos);
-            let local_pos = pos.sub(this.position);
-            let mlocal_pos = new Vector3(local_pos.y, local_pos.x, local_pos.z);
             let dir = new Vector3(0, 0, 0);
-
-            let vertical_flip = this.direction == "^" && tile == "v" || this.direction == "v" && tile == "^";
-            let horizontal_flip = this.direction == "<" && tile == ">" || this.direction == ">" && tile == "<";
             
             let rotation_number = subtract_direction_symbols(tile as DirectionSymbol, this.direction as DirectionSymbol);
 
             var colls =  this.world.findEntitiesCollidingWith(this);
-
-            if (tile == "^") {
-                this.setupWithText(this.sprites.get("^"));
-                this.commitChanges();
-                dir = new Vector3(0, -1, 0);
-            } else if (tile == "v") {
-                this.setupWithText(this.sprites.get("v"));
-                this.commitChanges();
-                dir = new Vector3(0, 1, 0);
-            } else if (tile == ">") {
-                this.setupWithText(this.sprites.get(">"));
-                this.commitChanges();
-                dir = new Vector3(1, 0, 0);
-            } else if (tile == "<") {
-                this.setupWithText(this.sprites.get("<"));
-                this.commitChanges();
-                dir = new Vector3(-1, 0, 0);
-            } else if (tile == "o") {
+         
+           
+            if (tile == "o") {
                 let collisions = this.world.raycast(obj.position, direction_symbol_to_vector[this.direction], 20, this);
                 let distance = 20;
                 if (collisions.length > 0) {
@@ -169,28 +102,15 @@ export class SpaceShip extends TileMapObject {
                 console.log(rotation_number);
 
                 this.direction = tile as DirectionSymbol;
+                dir = direction_symbol_to_vector[this.direction];
 
-                var new_position = obj.position.sub(this.arrow_positions.get(this.direction).get(tile)).add(dir.mul(2));
+                this.tilemap.rotateRight(-rotation_number);
+                this.commitChanges();
 
-                colls.forEach((gameObject, index, array) => {
-                    if (gameObject instanceof NetworkEntity && !(gameObject instanceof TileMapObject) && gameObject != obj) {
-                        let offset = gameObject.position.sub(this.position);
-                       
+                var new_position = this.position.add(dir.mul(2));
 
-                        if(vertical_flip || horizontal_flip) {
-                            gameObject.position = offset.pmul(new Vector3(-1, -1, 1)).add(new_position).add(new Vector3(this.tilemap.width-1, this.tilemap.height-1, 0));
-                        } else if(rotation_number >0) {
-                            if(rotation_number==3) {
-                                gameObject.position = new Vector3(this.tilemap.width-offset.y-1, offset.x, offset.z).add(new_position);
-                            } else {
-                                gameObject.position = new Vector3(offset.y, this.tilemap.height-offset.x-1, offset.z).add(new_position);
-                            }
-                        } else {
-                            gameObject.position = gameObject.position.add(dir);
-                        }
-                        gameObject.emitPosition();
-                    }
-                });
+                this.rotateAndMovePositionsOfEntities(colls, (go) => go instanceof TileMapObject, rotation_number, new_position, this.tilemap.width, this.tilemap.height);
+                
                 this.position = new_position;
             }
             this.emitPosition();

@@ -54,7 +54,15 @@ setInterval(() => {
     world.guiDraw();
 
     context.clearRect(0,0, canvas.width, canvas.height);
+    for(let i =0; i < 8; i++) {
+        context.fillText(
+            ".", Math.floor(Math.random()*42)*10, Math.floor(Math.random()*42)*10
+        );
+    }
+
+    context.save();
     renderer.render();
+    context.restore();
 
     keyboard.update();
 
