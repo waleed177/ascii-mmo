@@ -33,10 +33,20 @@ export class InventoryDisplay extends ServerGameObject {
         this.messageHandler.on("useItem", (sender, data: UseItemData) => {
             sender.player.inventory.useItemId(data.id);
         });
+
+        this.messageHandler.on("selectItem", (sender, data: UseItemData) => {
+            sender.player.inventory.selectItemId(data.id);
+        });
     }
 
     emitInventoryUpdate(client: ClientHandler, update: InventoryUpdatedData) {
         this.emitTo(client, "update", update);
+    }
+
+    setKeyboardOwnershipFor(client: ClientHandler, ownership: boolean) {
+        this.emitTo(client, "setKeyboardOwnership", {
+            keyboardOwnership: ownership
+        });
     }
 
     getPublicData(): SpawnGameObjectData {

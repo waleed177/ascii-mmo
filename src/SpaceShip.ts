@@ -27,10 +27,82 @@ import { NetworkPlayer } from './NetworkPlayer';
 import { DirectionSymbol, direction_symbol_add, direction_symbol_to_number, direction_symbol_to_vector, subtract_direction_symbols } from '../client/shared/DirectionUtils';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 import { Laser } from './Laser';
+import { ITileBehaviour } from './tiles/Tile';
+import { ClientHandler } from './ClientHandler';
+import { NetworkEntity } from './NetworkEntity';
+
+
+class ArrowBehaviour implements ITileBehaviour {
+
+    use(client: ClientHandler): void {
+        
+    }
+
+    collide(tileMap: TileMapObject, localPosition: Vector3, collider: ServerGameObject, tileSymbol: string): void {
+        if(tileMap instanceof SpaceShip) {
+            let colls = tileMap.world.findEntitiesCollidingWith(tileMap);
+         
+            let rotation_number = subtract_direction_symbols(
+                tileSymbol as DirectionSymbol, tileMap.direction as DirectionSymbol
+            );
+
+            tileMap.direction = tileSymbol as DirectionSymbol;
+            let dir: Vector3 = direction_symbol_to_vector[tileMap.direction];
+
+            tileMap.tilemap.rotateRight(-rotation_number);
+
+            let new_position = tileMap.position.add(dir.mul(2));
+
+            tileMap.rotateAndMovePositionsOfEntities(
+                colls,
+                (go) => go instanceof TileMapObject,
+                rotation_number,
+                new_position,
+                tileMap.tilemap.width, tileMap.tilemap.height
+            );
+            
+            tileMap.position = new_position;
+            tileMap.commitChanges();
+            tileMap.emitPosition();
+        }
+    }
+}
+
+class ShootingBehaviour implements ITileBehaviour {
+    use(client: ClientHandler): void {
+        
+    }
+
+    collide(tileMap: TileMapObject, localPosition: Vector3, collider: ServerGameObject, tileSymbol: string): void {
+        if(tileMap instanceof SpaceShip && collider instanceof NetworkEntity) {
+            let collisions = tileMap.world.raycast(collider.position, direction_symbol_to_vector[tileMap.direction], 20, tileMap);
+            let distance = 20;
+            if (collisions.length > 0) {
+                let tilemap = collisions[0].gameObject;
+                if(tilemap instanceof TileMapObject) {
+                    distance = Math.round(collisions[0].position.sub(collider.position).length())-2;
+                    if(distance < 0) distance = 0;
+                    tilemap.damageTilesAtWorldSpace(collisions[0].position, 2);
+                    tilemap.commitChanges();
+                }
+            }
+
+            let direction_vector = direction_symbol_to_vector[tileMap.direction];
+            let laser = new Laser(distance, direction_symbol_to_number[tileMap.direction]);
+            if(tileMap.direction == ">" || tileMap.direction  == "v") {
+                laser.position = collider.position.add(direction_vector.mul(2));
+            } else {
+                laser.position = collider.position.add(direction_vector.mul(distance+2));
+            }
+            tileMap.world.addChild(laser);
+        }
+    }
+    
+}
 
 export class SpaceShip extends TileMapObject {
-    private arrow_positions = new Map<string, Map<string, Vector3>>();
-    private direction: DirectionSymbol;
+
+    public direction: DirectionSymbol;
 
     constructor() {
         super();
@@ -43,6 +115,9 @@ export class SpaceShip extends TileMapObject {
 #       
 #   v   #
 #########`, 1, "left"));
+
+        this.overrideTileBehaviour(["<", "^", ">", "v"], new ArrowBehaviour());
+        this.overrideTileBehaviour(["o"], new ShootingBehaviour());
     }
 
     deserialize(data: ServerSerializedGameObject) {
@@ -64,56 +139,4 @@ export class SpaceShip extends TileMapObject {
         } as {prefab: PrefabName}
     }
 
-    processCollisionWith(obj: ServerGameObject, pos: Vector3) {
-        if(obj instanceof NetworkPlayer) {
-            let tile = this.getTileAtWorldSpace(pos);
-            let dir = new Vector3(0, 0, 0);
-            
-            let rotation_number = subtract_direction_symbols(tile as DirectionSymbol, this.direction as DirectionSymbol);
-
-            var colls =  this.world.findEntitiesCollidingWith(this);
-         
-           
-            if (tile == "o") {
-                let collisions = this.world.raycast(obj.position, direction_symbol_to_vector[this.direction], 20, this);
-                let distance = 20;
-                if (collisions.length > 0) {
-                    let tilemap = collisions[0].gameObject;
-                    if(tilemap instanceof TileMapObject) {
-                        distance = Math.round(collisions[0].position.sub(obj.position).length())-2;
-                        if(distance < 0) distance = 0;
-                        tilemap.damageTilesAtWorldSpace(collisions[0].position, 2);
-                        tilemap.commitChanges();
-                    }
-                }
-
-                let direction_vector = direction_symbol_to_vector[this.direction];
-                let laser = new Laser(distance, direction_symbol_to_number[this.direction]);
-                if(this.direction == ">" || this.direction  == "v") {
-                    laser.position = obj.position.add(direction_vector.mul(2));
-                } else {
-                    laser.position = obj.position.add(direction_vector.mul(distance+2));
-                }
-                this.world.addChild(laser);
-            }
-
-            //todo figure this out later.
-            if ("^><v".indexOf(tile) >= 0) {
-                console.log(rotation_number);
-
-                this.direction = tile as DirectionSymbol;
-                dir = direction_symbol_to_vector[this.direction];
-
-                this.tilemap.rotateRight(-rotation_number);
-                this.commitChanges();
-
-                var new_position = this.position.add(dir.mul(2));
-
-                this.rotateAndMovePositionsOfEntities(colls, (go) => go instanceof TileMapObject, rotation_number, new_position, this.tilemap.width, this.tilemap.height);
-                
-                this.position = new_position;
-            }
-            this.emitPosition();
-        }
-    }
 }

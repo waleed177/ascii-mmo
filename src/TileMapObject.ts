@@ -26,10 +26,13 @@ import { Vector3 } from '../client/shared/Vector3';
 import { NetworkEntity } from './NetworkEntity';
 import { ServerSerializedGameObject } from './ServerSerializedGameObject';
 import { GameObject } from '../client/shared/GameObject';
+import { NetworkPlayer } from './NetworkPlayer';
+import { tileManager } from './tiles/Tiles';
+import { ITileBehaviour } from './tiles/Tile';
 
 export class TileMapObject extends NetworkEntity {
     public tilemap: TileMap;
-
+    protected tileBehaviourOverrides = new Map<string, ITileBehaviour>();
 
     setup(width: number, height: number, depth: number) {
         this.tilemap = new TileMap(width, height, depth);
@@ -126,4 +129,28 @@ export class TileMapObject extends NetworkEntity {
                     this.damageTileAtWorldSpace(new Vector3(x,y,z));
     }
 
+    processCollisionWith(obj: ServerGameObject, pos: Vector3) {
+        if(obj instanceof NetworkPlayer) {
+            let tileSymbol = this.getTileAtWorldSpace(pos);
+            let dir = new Vector3(0, 0, 0);
+
+            if(!tileManager.tilesByChar.has(tileSymbol)) return;
+
+            let tile = tileManager.tilesByChar.get(tileSymbol);
+
+            if(this.tileBehaviourOverrides.has(tileSymbol)) {
+                this.tileBehaviourOverrides.get(tileSymbol).collide(
+                    this, pos.sub(this.position), obj, tileSymbol
+                );
+            } else {
+                tile.collide(this, pos.sub(this.position), obj, tileSymbol);
+            }
+        }
+    }
+
+    overrideTileBehaviour(chars: string[], behaviour: ITileBehaviour) {
+        chars.forEach((value) => {
+            this.tileBehaviourOverrides.set(value, behaviour);
+        });
+    }
 }

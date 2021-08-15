@@ -27,13 +27,30 @@ export class Inventory {
     public items = new Array<ItemData>();
     private clientHandler: ClientHandler;
     public updateDisplay: () => void;
+    private selectedItemId: number = -1;
 
     constructor(clientHandler: ClientHandler) {
         this.clientHandler = clientHandler;
     }
 
+    get selectedItem() {
+        if (0 <= this.selectedItemId && this.selectedItemId < this.items.length)
+        return this.items[this.selectedItemId];
+    }
 
-    useItemId(id: number) {        
+    selectItemId(id: number) {
+        if(0 <= id && id < this.items.length)
+            this.selectedItemId = id;
+    }
+
+    useItemId(id: number) {  
+        this.selectItemId(id);
+        console.log(this.selectedItem);
+        if(this.selectedItem.name == "chest") {
+            this.clientHandler.player.world.server.worldEditor.setEditModeFor(
+                this.clientHandler, true, "$position"
+            );
+        }
         this.save();
         this.updateDisplay();
     }

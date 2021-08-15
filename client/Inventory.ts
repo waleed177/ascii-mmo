@@ -23,8 +23,11 @@ import { ClientGameObject } from "./ClientGameObject.js";
 import { InventoryUpdatedData } from "./shared/InventoryUpdatedData.js";
 import { Item, ItemData } from "./shared/Item.js";
 import { UseItemData } from "./shared/UseItemData.js";
+import { WorldEditor } from "./WorldEditor.js";
 
 export class Inventory extends ClientGameObject {
+    public static instance: Inventory;
+
     private items = new Array<ItemData>();
     private cursorLocation: number = 0;
     private _usingKeyboard: boolean = false;
@@ -40,28 +43,50 @@ export class Inventory extends ClientGameObject {
         }
     }
 
+    public stop() {
+        this.usingKeyboard = false;
+    }
+
     constructor() {
         super();
+        Inventory.instance = this;
+
         this.messageHandler.on("update", (sender, data: InventoryUpdatedData) => {
             this.items = data.items;
         });
 
         keyboard.addKeyDownListener("inventory", (ev) => {    
             if(ev.key.toLowerCase() == "i") {
-                this.usingKeyboard = !this.usingKeyboard;
+                this.usingKeyboard = true;
             } else if (this.usingKeyboard) {
                 if(ev.key == "w") {
                     this.cursorLocation += 1;
+                    this.emit("selectItem", {
+                        id: this.cursorLocation
+                    });
                 } else if(ev.key == "s") {
                     this.cursorLocation -= 1;
-                } else if(ev.key == "Enter") {
+                    this.emit("selectItem", {
+                        id: this.cursorLocation
+                    });
+                } else if(ev.key == "e") {
                     this.emit("useItem", {
                         id: this.cursorLocation
                     } as UseItemData);
+                } else if(ev.key == "f") {
+                    this.usingKeyboard = false;
                 }
                 this.cursorLocation = Math.max(0, Math.min(this.items.length-1, this.cursorLocation));
             }
         });
+
+        this.messageHandler.on("setKeyboardOwnership", (sender, data) => {
+            keyboard.setOwnership("inventory", data.keyboardOwnership); //TODO: Interface
+        });
+    }
+
+    update() {
+        
     }
 
     guiDraw() {

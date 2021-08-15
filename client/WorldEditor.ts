@@ -22,10 +22,13 @@ import { ClientGameObject } from './ClientGameObject.js';
 import { keyboard, renderer } from './Client.js';
 import { Vector2 } from './shared/Vector2.js';
 import { PlaceTileData } from './shared/PlaceTileData.js';
+import { Inventory } from './Inventory.js';
 
 export class WorldEditor extends ClientGameObject {
+    public static instance: WorldEditor;
+
     private _isEditing: boolean = false;
-    private get isEditing(): boolean {
+    public get isEditing(): boolean {
         return this._isEditing;
     }
     private set isEditing(value: boolean) {
@@ -37,6 +40,11 @@ export class WorldEditor extends ClientGameObject {
     private currentTile: string = 't';
     private changeCurrentTileMode: boolean = false;
     private alwaysPlace: boolean = false;
+
+    constructor() {
+        super();
+        WorldEditor.instance = this;
+    }
 
     ready() {
         keyboard.addKeyDownListener(this, (ev) => {
@@ -81,6 +89,14 @@ export class WorldEditor extends ClientGameObject {
                 }
             }
             
+        });
+
+        this.messageHandler.on("setEditMode", (sender, data) => {
+            this.cursorLocation = this.world.player.position.clone();
+            this.alwaysPlace = false;
+            Inventory.instance.stop();
+            this.isEditing = data.isEditing; //TODO: INTERFACE
+            this.currentTile = data.tile;
         });
     }
 

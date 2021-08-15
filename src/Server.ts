@@ -36,6 +36,7 @@ export class Server {
     public inventoryDisplay = new InventoryDisplay();
     public questsDisplay = new QuestsDisplay();
     public alphaKey: string;
+    public worldEditor = new WorldEditor();
 
     addClient(client: ClientHandler) {
         this.clients.push(client);
@@ -52,7 +53,7 @@ export class Server {
         this.world.addChild(new ChatBox());
         this.world.addChild(this.inventoryDisplay);
         this.world.addChild(this.questsDisplay);
-        this.world.addChild(new WorldEditor());
+        this.world.addChild(this.worldEditor);
         this.world.load();
 
         setInterval(() => {

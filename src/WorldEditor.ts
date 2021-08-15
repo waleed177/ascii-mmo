@@ -23,6 +23,7 @@ import { ServerGameObject } from './ServerGameObject';
 import { PlaceTileData } from '../client/shared/PlaceTileData';
 import { Vector3 } from '../client/shared/Vector3';
 import { TileMapObject } from './TileMapObject';
+import { ClientHandler } from './ClientHandler';
 
 
 export class WorldEditor extends ServerGameObject {
@@ -33,15 +34,22 @@ export class WorldEditor extends ServerGameObject {
 
         this.messageHandler.on("place", (sender, data: PlaceTileData) => {
             var colls = this.world.findCollisionsWithPoint(new Vector3(data.x, data.y, data.z));
-            colls.forEach((gameObject, index, array) => {
-                if (gameObject instanceof TileMapObject) {
-                    gameObject.tilemap.setTile(
-                        data.x-gameObject.position.x,
-                        data.y-gameObject.position.y,
-                        data.z, data.tile);
-                    gameObject.commitChanges();
-                }
-            });
+
+            if(data.tile == "$position") {
+                sender.player.placeInventorySelectedItemAt(new Vector3(data.x, data.y, data.z));
+                this.setEditModeFor(sender, false, ' ');
+                
+            } else {
+                colls.forEach((gameObject, index, array) => {
+                    if (gameObject instanceof TileMapObject) {
+                        gameObject.tilemap.setTile(
+                            data.x-gameObject.position.x,
+                            data.y-gameObject.position.y,
+                            data.z, data.tile);
+                        gameObject.commitChanges();
+                    }
+                });
+            }
         });
     }
 
@@ -55,5 +63,12 @@ export class WorldEditor extends ServerGameObject {
             prefab: "worldEditor",
             data: {}
         };
+    }
+
+    setEditModeFor(client: ClientHandler, bool: boolean, tile: string) {
+        this.emitTo(client, "setEditMode", {
+           isEditing: bool, //TODO: INTERFACE
+           tile: tile
+        });
     }
 }
