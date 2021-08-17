@@ -22,6 +22,7 @@ import { InventoryUpdatedData } from '../client/shared/InventoryUpdatedData';
 import { ItemData } from '../client/shared/Item';
 import { ClientHandler } from './ClientHandler';
 import { InventoryDisplay } from './InventoryDisplay';
+import { itemManager } from './items/Items';
 
 export class Inventory {
     public items = new Array<ItemData>();
@@ -37,6 +38,12 @@ export class Inventory {
         if (0 <= this.selectedItemId && this.selectedItemId < this.items.length)
         return this.items[this.selectedItemId];
     }
+    
+    clear() {
+        this.items.splice(0, this.items.length);
+        this.save();
+        this.updateDisplay();
+    }
 
     selectItemId(id: number) {
         if(0 <= id && id < this.items.length)
@@ -45,34 +52,47 @@ export class Inventory {
 
     useItemId(id: number) {  
         this.selectItemId(id);
-        console.log(this.selectedItem);
-        if(this.selectedItem.name == "chest") {
-            this.clientHandler.player.world.server.worldEditor.setEditModeFor(
-                this.clientHandler, true, "$position"
-            );
+
+        let item = itemManager.items.get(
+            this.selectedItem.id
+        );
+
+        if(item) {
+            if(item.isPlacable(this.clientHandler.player.world)) {
+                this.clientHandler.player.world.server.worldEditor.setEditModeFor(
+                    this.clientHandler, true, "$position"
+                );
+            } else {
+                if(item.useItem(this.clientHandler)) {
+                    this.takeItem(this.selectedItem.id, 1);
+                }
+            }
         }
+
         this.save();
         this.updateDisplay();
     }
 
-    addItem(itemData: ItemData) {
+    addItem(id: string, quantity: number) {
         let found = false;
         for(let i = 0; i < this.items.length; i++) {
-            if(this.items[i].name == itemData.name) {
-                this.items[i].quantity += itemData.quantity;
+            if(this.items[i].id == id) {
+                this.items[i].quantity += quantity;
                 found = true;
                 break;
             }
         }
         if(!found)
-            this.items.push(itemData);
+            this.items.push(
+                itemManager.items.get(id).instanceData(quantity)
+            );
         this.save();
         this.updateDisplay();
     }
 
-    private indexOfItem(name: string): number {
+    private indexOfItem(id: string): number {
         for(let i = 0; i < this.items.length; i++) {
-            if(this.items[i].name == name) {
+            if(this.items[i].id == id) {
                 return i;
             }
         }
@@ -98,8 +118,8 @@ export class Inventory {
         return true;
     }
 
-    getItemName(location: number) {
-        return this.items[location].name;
+    getItemDisplayName(location: number) {
+        return this.items[location].displayName;
     }
     
     load() {

@@ -21,7 +21,7 @@
 import { keyboard, renderer } from "./Client.js";
 import { ClientGameObject } from "./ClientGameObject.js";
 import { InventoryUpdatedData } from "./shared/InventoryUpdatedData.js";
-import { Item, ItemData } from "./shared/Item.js";
+import { ItemData } from "./shared/Item.js";
 import { UseItemData } from "./shared/UseItemData.js";
 import { WorldEditor } from "./WorldEditor.js";
 
@@ -93,7 +93,7 @@ export class Inventory extends ClientGameObject {
         for(let i = 0; i < this.items.length; i++) {
             renderer.writeTextScreenCoord(
                 0, renderer.height-i-1, 0,
-                (this.cursorLocation == i ? ">" : "") + this.items[i].name + " " +  this.items[i].quantity
+                (this.cursorLocation == i ? ">" : "") + this.items[i].displayName + " " +  this.items[i].quantity
             );
         }
     }

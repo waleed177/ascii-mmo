@@ -109,10 +109,13 @@ export class SpaceShip extends TileMapObject {
 
         this.direction = "^";
         this.setupWithText(trim_amount(`
-  #####
+  #####  
  #  ^o #
-# <   > #
+#       #
 #       
+#<     >#
+#       #
+#       #
 #   v   #
 #########`, 1, "left"));
 

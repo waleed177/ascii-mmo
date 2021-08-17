@@ -204,10 +204,14 @@ export class ChatBox extends ServerGameObject {
                             break;
                         }
                         case "additem": {
-                            sender.player.inventory.addItem({
-                                name: sp[1],
-                                quantity: Number.parseInt(sp[2])
-                            });
+                            sender.player.inventory.addItem(
+                                sp[1],
+                                Number.parseInt(sp[2])
+                            );
+                            break;
+                        }
+                        case "clearinv": {
+                            sender.player.inventory.clear();
                             break;
                         }
                     }

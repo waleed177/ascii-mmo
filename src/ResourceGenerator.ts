@@ -16,10 +16,7 @@ export class ResourceGenerator extends NetworkEntity {
             var neighbors = this.get4Neighbors();
             neighbors.forEach((value, index, array) => {
                 if (value instanceof Chest) {
-                    value.inventory.addItem({
-                        name: "R",
-                        quantity: 1
-                    } as ItemData)
+                    value.inventory.addItem("r", 1);
                 }
             });
         });

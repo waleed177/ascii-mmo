@@ -20,11 +20,7 @@
 
 
 export interface ItemData {
-    name: string;
-    quantity: number;
-}
-
-export class Item implements ItemData {
-    name: string;
+    id: string;
+    displayName: string;
     quantity: number;
 }

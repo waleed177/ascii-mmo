@@ -67,10 +67,9 @@ d.choice("Tomatoe.", d.goto("dontgive"));
 d.label("givetomato");
 d.prompt("Ok here it is.");
 d.choice("Thanks!", (exec)=> {
-    exec.client.player.inventory.addItem({
-        name: "tomato",
-        quantity: 1
-    });
+    exec.client.player.inventory.addItem(
+        "tomato", 1
+    );
     return true;
 }, d.end());
 

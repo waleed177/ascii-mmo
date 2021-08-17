@@ -38,28 +38,22 @@ export class Chest extends NetworkEntity {
         
         this.messageHandler.on("useItem", (sender, data: UseItemData) => {
             if(data.id >= this.inventory.items.length) return;
-            let name = this.inventory.getItemName(data.id);
+            let name = this.inventory.getItemDisplayName(data.id);
 
             let tookItem = this.inventory.takeItem(
                 name,
                 1
             );
             if(tookItem)
-                sender.player.inventory.addItem({
-                    name: name,
-                    quantity: 1
-                });
+                sender.player.inventory.addItem(
+                    name, 1
+                );
         });
     }
 
     ready() {
         this.inventory = new Inventory(null);
         this.inventory.updateDisplay = () => {this.updateData()};
-
-        this.inventory.addItem({
-            name: "waw",
-            quantity: 10
-        });
     }
 
     use(clientHandler: ClientHandler) {
@@ -69,7 +63,7 @@ export class Chest extends NetworkEntity {
     generateDisplay() {
         let res = new Array<string>();
         this.inventory.items.forEach((value, index, array) => {
-            res.push(value.name + " " + value.quantity);
+            res.push(value.displayName + " " + value.quantity);
         });
         return res;
     }

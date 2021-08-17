@@ -30,6 +30,7 @@ import { tilesInfo } from './TileInfo';
 import { NPC } from './NPC';
 import { InventoryUpdatedData } from '../client/shared/InventoryUpdatedData';
 import { Chest } from './Chest';
+import { itemManager } from './items/Items';
 
 export class NetworkPlayer extends NetworkEntity {
     inventory: Inventory;
@@ -143,11 +144,18 @@ export class NetworkPlayer extends NetworkEntity {
     }
 
     public placeInventorySelectedItemAt(position: Vector3){ 
-        if(this.inventory.selectedItem.name == "chest") { //TODO: move this inside selectedItem, im just testing rn.
-            let thing = new Chest();
-            thing.position = position;
-            this.world.addChild(thing);
-            this.inventory.takeItem(this.inventory.selectedItem.name, 1);
+        let item = itemManager.items.get(
+            this.inventory.selectedItem.id
+        );
+
+        if(item) {
+            let thing = item.constructEntity(this.world, position);
+            if(thing) {
+                thing.position = position;
+                this.world.addChild(thing);
+                this.inventory.takeItem(this.inventory.selectedItem.id, 1);
+            }
         }
+        
     }
 }

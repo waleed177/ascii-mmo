@@ -39,31 +39,31 @@ function addTile(tile: TileConstructor) {
     })
 }
 
-export class Wall extends Tile {
+class WallTile extends Tile {
     public id = "wall";
     public displayName = "Wall";
     public chars = ["┌", "─", "┐", "│", "#"];
 }
-addTile(Wall);
+addTile(WallTile);
 
-export class Chest extends Tile {
+class ChestTile extends Tile {
     public id = "chest";
     public displayName = "Chest";
     public chars = ["█"];
 }
-addTile(Chest);
+addTile(ChestTile);
 
-export class Floor extends Tile {
+class FloorTile extends Tile {
     public id = "floor";
     public displayName = "Floor";
     public chars = ["."];
 }
-addTile(Floor);
+addTile(FloorTile);
 
-export class Arrow extends Tile {
+class ArrowTile extends Tile {
     public id = "arrow";
     public displayName = "Arrow";
     public chars = ["<", "^", ">", "v"];
     
 }
-addTile(Arrow);
+addTile(ArrowTile);
