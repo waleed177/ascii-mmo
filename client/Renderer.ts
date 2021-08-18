@@ -2,6 +2,7 @@
 /*
     This is an ASCII MMO game.
     Copyright (C) 2021 waleed177 <potatoxel@gmail.com>
+    Copyright (C) 2021 metamuffin <muffin@metamuffin.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
@@ -33,28 +34,36 @@ export class Renderer {
 
     public cameraPosition: Vector3 = new Vector3(0, 0, 0);
 
-    constructor(context: CanvasRenderingContext2D, width: number, height: number, depth: number) {
+    constructor(context: CanvasRenderingContext2D, depth: number) {
         this.context = context;
         this.tilemap = new Array<Array<Array<string>>>();
 
         context.clearRect(0, 0, 600, 600);
         context.font = "10px serif";
         
-        for(let x = 0; x < width; x++) {
-            let row = new Array<Array<string>>();
-            for(let y = 0; y < height; y++) {
-                let thingy = new Array<string>();
-                for(let z = 0; z < depth; z++) {
-                    thingy.push(" ");
+        const resize = () => {
+            this.width = Math.floor(window.innerWidth / this.tileWidth)
+            this.height = Math.floor(window.innerHeight / this.tileHeight)
+            this.tilemap = []
+            for(let x = 0; x < this.width; x++) {
+                let row = new Array<Array<string>>();
+                for(let y = 0; y < this.height; y++) {
+                    let thingy = new Array<string>();
+                    for(let z = 0; z < depth; z++) {
+                        thingy.push(" ");
+                    }
+                    row.push(thingy);
                 }
-                row.push(thingy);
+                this.tilemap.push(row);
             }
-            this.tilemap.push(row);
         }
-
-        this.width = width;
-        this.height = height;
+        
+        this.width = 0;
+        this.height = 0;
         this.depth = depth;
+
+        resize()
+        window.addEventListener("resize", () => resize())        
     }
 
     public clear() {
