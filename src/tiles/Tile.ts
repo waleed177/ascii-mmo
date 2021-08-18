@@ -25,7 +25,7 @@ import { ServerGameObject } from "../ServerGameObject";
 import { TileMapObject } from "../TileMapObject";
 
 export interface ITileBehaviour {
-    use(client: ClientHandler): void;
+    use(client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3): void;
 
     collide(tileMap: TileMapObject, localPosition: Vector3, collider: ServerGameObject, tileSymbol: string): void;
 }
@@ -35,20 +35,34 @@ export class Tile implements ITileBehaviour {
     public displayName: string;
     public chars: Array<string>;
     public canCollide: boolean = true;
-
-    public use(client: ClientHandler) {
-        this.onUse(client);
+    public everyList: Array<
+        {
+            func: (client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3) => void,
+            period: number
+        }
+    >;
+    
+    public use(client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3) {
+        this.onUse(client, tileMap, localPosition);
     }
 
     public collide(tileMap: TileMapObject, localPosition: Vector3, collider: ServerGameObject, tileSymbol: string) {
         this.onCollide(tileMap, localPosition, collider, tileSymbol);
     }
 
-    protected onUse(client: ClientHandler) {
+    public blockUpdate(tileMap: TileMapObject, localPosition: Vector3) {
+        this.onBlockUpdate(tileMap, localPosition);
+    }
+
+    protected onUse(client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3) {
 
     }
 
     protected onCollide(tileMap: TileMapObject, localPosition: Vector3, collider: ServerGameObject, tileSymbol: string) {
+
+    }
+
+    protected onBlockUpdate(tileMap: TileMapObject, localPosition: Vector3) {
 
     }
 }
