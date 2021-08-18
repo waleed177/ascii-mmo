@@ -2,6 +2,7 @@
 /*
     This is an ASCII MMO game.
     Copyright (C) 2021 waleed177 <potatoxel@gmail.com>
+    Copyright (C) 2021 metamuffin <muffin@metamuffin.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
@@ -27,7 +28,7 @@ import { ChatBox } from "./ChatBox.js";
 let canvas = document.getElementById("game") as HTMLCanvasElement;
 let context = canvas.getContext('2d');
 
-export let renderer = new Renderer(context, 42, 42, 1);
+export let renderer = new Renderer(context, 1);
 canvas.width = renderer.width * renderer.tileWidth;
 canvas.height = renderer.height * renderer.tileHeight;
 
@@ -36,7 +37,7 @@ keyboard.hookToWindow();
 
 var socket: Socket = new Socket();
 var world = new NetworkWorld(socket);
-socket.connect((window.location.host.indexOf("asciimmo") >= 0 ? "wss" : "ws") + "://" + window.location.host + "/server");
+socket.connect((window.location.protocol.endsWith("s") ? "wss" : "ws") + "://" + window.location.host + "/server");
 
 socket.emit("test", {
     test1: 100,
