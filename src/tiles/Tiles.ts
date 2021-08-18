@@ -18,6 +18,9 @@
 */
 //#endregion
 
+import { Vector3 } from "../../client/shared/Vector3";
+import { ClientHandler } from "../ClientHandler";
+import { TileMapObject } from "../TileMapObject";
 import { Tile } from "./Tile";
 
 class TileManager {
@@ -64,6 +67,19 @@ class ArrowTile extends Tile {
     public id = "arrow";
     public displayName = "Arrow";
     public chars = ["<", "^", ">", "v"];
-    
 }
 addTile(ArrowTile);
+
+class BasicResourceGeneratorTile extends Tile {
+    public id = "generators_resources_basic";
+    public displayName = "Basic resources generator";
+    public chars = ["R"];
+    public everyList = [
+        {
+            func: (client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3) => {
+                
+            },
+            period: 1
+        }
+    ];
+}

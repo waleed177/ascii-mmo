@@ -34,7 +34,7 @@ import { NetworkEntity } from './NetworkEntity';
 
 class ArrowBehaviour implements ITileBehaviour {
 
-    use(client: ClientHandler): void {
+    use(client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3): void {
         
     }
 
@@ -69,7 +69,7 @@ class ArrowBehaviour implements ITileBehaviour {
 }
 
 class ShootingBehaviour implements ITileBehaviour {
-    use(client: ClientHandler): void {
+    use(client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3): void {
         
     }
 
