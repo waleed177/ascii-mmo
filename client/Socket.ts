@@ -2,6 +2,7 @@
 /*
     This is an ASCII MMO game.
     Copyright (C) 2021 waleed177 <potatoxel@gmail.com>
+    Copyright (C) 2021 metamuffin <muffin@metamuffin.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
@@ -29,11 +30,25 @@ export class Socket {
         this.sendQueue = new Array<string>();
         this.functionBindings = new Map<string, (data: object) => void>();
     }
-    
+
     connect(url: string) {
         this.webSocket = new WebSocket(url);
         this.webSocket.onopen = (ev: Event) => this.onSocketOpen(ev);
         this.webSocket.onmessage = (ev: MessageEvent<string>) => this.onSocketMessage(ev);
+        this.webSocket.onclose = () => {
+            console.log("disconnected");
+            const try_reconnect = () => {
+                console.log("trying to reconnect...");
+                const ws = new WebSocket(this.webSocket.url)
+                ws.onopen = () => {
+                    console.log("reload!");
+                    // reconnect successful, now reload
+                    window.location.reload()
+                }
+                ws.onclose = () => setTimeout(try_reconnect, 100)
+            }
+            try_reconnect()
+        }
     }
 
     emit(type: string, data: object) {
@@ -54,7 +69,7 @@ export class Socket {
     }
 
     private onSocketOpen(ev: Event) {
-        for(var i = 0; i < this.sendQueue.length; i++) {
+        for (var i = 0; i < this.sendQueue.length; i++) {
             var data = this.sendQueue[i];
             this.webSocket.send(data);
         }
