@@ -39,6 +39,7 @@ class ArrowBehaviour implements ITileBehaviour {
     }
 
     collide(tileMap: TileMapObject, localPosition: Vector3, collider: ServerGameObject, tileSymbol: string): void {
+        
         if(tileMap instanceof SpaceShip) {
             let colls = tileMap.world.findEntitiesCollidingWith(tileMap);
          
@@ -55,7 +56,7 @@ class ArrowBehaviour implements ITileBehaviour {
 
             tileMap.rotateAndMovePositionsOfEntities(
                 colls,
-                (go) => go.movable,
+                (go) => !go.movable,
                 rotation_number,
                 new_position,
                 tileMap.tilemap.width, tileMap.tilemap.height
@@ -74,6 +75,7 @@ class ShootingBehaviour implements ITileBehaviour {
     }
 
     collide(tileMap: TileMapObject, localPosition: Vector3, collider: ServerGameObject, tileSymbol: string): void {
+        
         if(tileMap instanceof SpaceShip && collider instanceof NetworkEntity) {
             let collisions = tileMap.world.raycast(collider.position, direction_symbol_to_vector[tileMap.direction], 20, tileMap);
             let distance = 20;

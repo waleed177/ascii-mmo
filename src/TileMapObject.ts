@@ -147,15 +147,14 @@ export class TileMapObject extends NetworkEntity {
             let tileSymbol = this.getTileAtWorldSpace(pos);
             let dir = new Vector3(0, 0, 0);
 
-            if(!tileManager.tilesByChar.has(tileSymbol)) return;
-
-            let tile = tileManager.tilesByChar.get(tileSymbol);
-
             if(this.tileBehaviourOverrides.has(tileSymbol)) {
                 this.tileBehaviourOverrides.get(tileSymbol).collide(
                     this, pos.sub(this.position), obj, tileSymbol
                 );
             } else {
+                if(!tileManager.tilesByChar.has(tileSymbol)) return;
+
+                let tile = tileManager.tilesByChar.get(tileSymbol);
                 tile.collide(this, pos.sub(this.position), obj, tileSymbol);
             }
         }

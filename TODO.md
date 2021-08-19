@@ -7,3 +7,6 @@
 [?] Ship Customization
 [?] Ship Destruction
 [ ] Better UI System
+[ ] Different tiles same character
+[ ] Color
+[ ] 3D
