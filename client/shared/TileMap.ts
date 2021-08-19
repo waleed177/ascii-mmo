@@ -19,12 +19,14 @@
 //#endregion
 
 import {direction_number_modulo, rotate_symbol} from "./DirectionUtils.js";
+import { Vector3 } from "./Vector3.js";
 
 export class TileMap {
     public tilemap: Array<Array<Array<string>>>;
     public width: number;
     public height: number;
     public depth: number;
+    public onSetTile: (position: Vector3, newTile: string) => void;
 
     constructor(width: number, height: number, depth: number) {
         this.initializeTilemap(width, height, depth);
@@ -72,8 +74,11 @@ export class TileMap {
     }
 
     public setTile(x: number, y: number, z: number, char: string) {
-        if(this.inBounds(x, y, z))
+        if(this.inBounds(x, y, z)){
             this.tilemap[x][y][z] = char;
+            if(this.onSetTile)
+                this.onSetTile(new Vector3(x,y,z), char);
+        }
     }
 
     public getTile(x: number, y: number, z: number) {

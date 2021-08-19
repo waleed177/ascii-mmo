@@ -70,16 +70,36 @@ class ArrowTile extends Tile {
 }
 addTile(ArrowTile);
 
+/*
+class RotationTest extends Tile {
+    public id = "rotationTest";
+    public displayName = "Arrow";
+    public chars = ["A", "B"];
+
+    public periodicFunction = {
+        func: (tileMap: TileMapObject, localPosition: Vector3) => {
+            tileMap.tilemap.setTile(
+                localPosition.x, localPosition.y, localPosition.z,
+                tileMap.tilemap.getTile(localPosition.x, localPosition.y, localPosition.z) == 'A' ? 'B' : 'A'
+            );
+            tileMap.commitChanges();
+        },
+        period: 20,
+        timeLeft: 20
+    }
+}
+addTile(RotationTest); 
+*/
+
 class BasicResourceGeneratorTile extends Tile {
     public id = "generators_resources_basic";
     public displayName = "Basic resources generator";
     public chars = ["R"];
-    public everyList = [
-        {
-            func: (client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3) => {
-                
-            },
-            period: 1
-        }
-    ];
+    public periodicFunction = {
+        func: (tileMap: TileMapObject, localPosition: Vector3) => {
+            
+        },
+        period: 1,
+        timeLeft: 0
+    }
 }

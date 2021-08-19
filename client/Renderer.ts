@@ -42,8 +42,8 @@ export class Renderer {
         context.font = "10px serif";
         
         const resize = () => {
-            this.width = Math.floor(window.innerWidth / this.tileWidth)
-            this.height = Math.floor(window.innerHeight / this.tileHeight)
+            this.width = Math.floor(window.innerWidth / this.tileWidth) -1
+            this.height = Math.floor(window.innerHeight / this.tileHeight) -1
             this.context.canvas.width = this.width * this.tileWidth;
             this.context.canvas.height = this.height * this.tileHeight;
             this.tilemap = []

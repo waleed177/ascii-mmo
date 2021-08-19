@@ -29,13 +29,26 @@ import { GameObject } from '../client/shared/GameObject';
 import { NetworkPlayer } from './NetworkPlayer';
 import { tileManager } from './tiles/Tiles';
 import { ITileBehaviour } from './tiles/Tile';
+import { ClientHandler } from './ClientHandler';
+import { PeriodicFunction } from './tiles/PeriodicFunction';
 
 export class TileMapObject extends NetworkEntity {
     public tilemap: TileMap;
     protected tileBehaviourOverrides = new Map<string, ITileBehaviour>();
+    protected periodicFunctions = new Map<string, [PeriodicFunction, Vector3]>();
 
     setup(width: number, height: number, depth: number) {
         this.tilemap = new TileMap(width, height, depth);
+        this.tilemap.onSetTile = (position, newTile) => {
+            var tile = tileManager.tilesByChar.get(newTile);
+            if(tile != null && tile.periodicFunction != null) {
+                this.periodicFunctions.set(
+                    position.toString(), [tile.periodicFunction, position]
+                );
+            } else {
+                this.periodicFunctions.delete(position.toString());
+            }
+        };
     }
 
     setupWithText(text: string) {
@@ -151,6 +164,27 @@ export class TileMapObject extends NetworkEntity {
     overrideTileBehaviour(chars: string[], behaviour: ITileBehaviour) {
         chars.forEach((value) => {
             this.tileBehaviourOverrides.set(value, behaviour);
+        });
+    }
+
+    use(client: ClientHandler) {
+        var stop = false;
+        client.player.position.get4Neighbors().forEach((vector) => {
+            if(stop) return;
+            var tile = tileManager.tilesByChar
+                .get(this.getTileAtWorldSpace(vector));
+            if(tile && tile.use(client, this, vector.sub(this.position))) {
+                stop = true;
+            }
+        });
+    }
+
+    update() {
+        this.periodicFunctions.forEach((value, key, map) => {
+            value[0].timeLeft -= 1;
+            if (value[0].timeLeft <= 0) {
+                value[0].func(this, value[1]);
+            }
         });
     }
 }

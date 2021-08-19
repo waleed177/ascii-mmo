@@ -52,7 +52,7 @@ export class Keyboard {
         });
         window.addEventListener("keyup", (ev: KeyboardEvent) => {
             this.keys.set(ev.key, false);
-            this.justPressedKeys.set(ev.key, true);
+            //this.justPressedKeys.set(ev.key, true);
             for(let i = 0; i < this.keyUpListeners.length; i++) {
                 var keyUpListener = this.keyUpListeners[i];
                 if(keyUpListener.scope == this.keyboardOwner || this.keyboardOwner == null) 

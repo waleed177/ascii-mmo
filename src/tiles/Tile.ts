@@ -23,6 +23,7 @@ import { Vector3 } from "../../client/shared/Vector3";
 import { ClientHandler } from "../ClientHandler";
 import { ServerGameObject } from "../ServerGameObject";
 import { TileMapObject } from "../TileMapObject";
+import { PeriodicFunction } from "./PeriodicFunction";
 
 export interface ITileBehaviour {
     use(client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3): void;
@@ -35,15 +36,10 @@ export class Tile implements ITileBehaviour {
     public displayName: string;
     public chars: Array<string>;
     public canCollide: boolean = true;
-    public everyList: Array<
-        {
-            func: (client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3) => void,
-            period: number
-        }
-    >;
+    public periodicFunction: PeriodicFunction;
     
-    public use(client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3) {
-        this.onUse(client, tileMap, localPosition);
+    public use(client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3): boolean {
+        return this.onUse(client, tileMap, localPosition);
     }
 
     public collide(tileMap: TileMapObject, localPosition: Vector3, collider: ServerGameObject, tileSymbol: string) {
@@ -54,8 +50,8 @@ export class Tile implements ITileBehaviour {
         this.onBlockUpdate(tileMap, localPosition);
     }
 
-    protected onUse(client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3) {
-
+    protected onUse(client: ClientHandler, tileMap: TileMapObject, localPosition: Vector3): boolean {
+        return false;
     }
 
     protected onCollide(tileMap: TileMapObject, localPosition: Vector3, collider: ServerGameObject, tileSymbol: string) {

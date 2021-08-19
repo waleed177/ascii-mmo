@@ -76,4 +76,17 @@ export class Vector3 {
     swapxy() {
         return new Vector3(this.y, this.x, this.z);
     }
+
+    get4Neighbors() {
+        return [
+            this.add(new Vector3(1, 0, 0)),
+            this.add(new Vector3(-1, 0, 0)),
+            this.add(new Vector3(0, 1, 0)),
+            this.add(new Vector3(0, -1, 0))
+        ]
+    }
+
+    toString() {
+        return this.x + "," + this.y + "," + this.z;
+    }
 }

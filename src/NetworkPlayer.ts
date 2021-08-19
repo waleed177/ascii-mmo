@@ -26,7 +26,6 @@ import { Quests } from './Quests';
 import { TileMapObject } from './TileMapObject';
 import { Vector3 } from '../client/shared/Vector3';
 import { GameObject } from '../client/shared/GameObject';
-import { tilesInfo } from './TileInfo';
 import { NPC } from './NPC';
 import { InventoryUpdatedData } from '../client/shared/InventoryUpdatedData';
 import { Chest } from './Chest';
@@ -112,6 +111,11 @@ export class NetworkPlayer extends NetworkEntity {
                 let entity = res[i];
                 entity.use(sender);
             }
+            this.world.findEntitiesCollidingWithPoint(sender.player.position).forEach((entity) => {
+                if(res.indexOf(entity) == -1){ 
+                    entity.use(sender);
+                }
+            });
         });
     }
 
