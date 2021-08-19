@@ -55,7 +55,7 @@ class ArrowBehaviour implements ITileBehaviour {
 
             tileMap.rotateAndMovePositionsOfEntities(
                 colls,
-                (go) => go instanceof TileMapObject,
+                (go) => go.movable,
                 rotation_number,
                 new_position,
                 tileMap.tilemap.width, tileMap.tilemap.height

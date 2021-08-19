@@ -34,6 +34,7 @@ export class GameObject {
         period: number,
         timeLeft: number
     }> = [];
+    public movable = false;
 
     update() {
         this.everyFunctions.forEach((value, index, array) => {

@@ -37,7 +37,7 @@ export class NetworkPlayer extends NetworkEntity {
     clientHandler: ClientHandler;
     shouldBeSerialized: boolean = false;
     saving: boolean = false;
-
+    
     constructor(clientHandler: ClientHandler) {
         super();
         this.sprite = 'P';

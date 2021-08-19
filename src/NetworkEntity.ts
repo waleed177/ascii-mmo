@@ -39,6 +39,7 @@ export class NetworkEntity extends ServerGameObject {
     public prefab: PrefabName = 'entityCharSprite';
     public privatePrefab: PrefabName = null;
     public data: object = {};
+    movable = true;
 
     deserialize(data: ServerSerializedGameObject){
         super.deserialize(data);

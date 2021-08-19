@@ -24,6 +24,7 @@ import { Chest } from './Chest';
 import { NetworkEntity } from './NetworkEntity';
 
 export class ResourceGenerator extends NetworkEntity {
+    movable = false;
 
     constructor() {
         super();
@@ -34,7 +35,7 @@ export class ResourceGenerator extends NetworkEntity {
             var neighbors = this.get4Neighbors();
             neighbors.forEach((value, index, array) => {
                 if (value instanceof Chest) {
-                    value.inventory.addItem("r", 1);
+                    value.inventory.addItem("move3r", 1);
                 }
             });
         });
