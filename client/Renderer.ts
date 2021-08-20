@@ -20,6 +20,7 @@
 //#endregion
 
 import { Vector3 } from "./shared/Vector3.js";
+import { TileMeta } from "./shared/TileMeta.js";
 
 //TODO REMOVE CODE DUPLICATION :(
 //TODO, RENDERER SHOULD NOT NEED DEPTH, ONLY CHECK IF camera z is THE SAME AS TILE
@@ -29,8 +30,8 @@ export class Renderer {
     public width: number;
     public height: number;
     public depth: number;
-    public tileWidth: number = 10;
-    public tileHeight: number = 10;
+    public tileWidth: number = 18;
+    public tileHeight: number = 18;
 
     public cameraPosition: Vector3 = new Vector3(0, 0, 0);
 
@@ -40,16 +41,16 @@ export class Renderer {
 
         context.clearRect(0, 0, 600, 600);
         context.font = "10px serif";
-        
+
         const resize = () => {
             this.width = Math.floor(window.innerWidth / this.tileWidth)
             this.height = Math.floor(window.innerHeight / this.tileHeight)
             this.tilemap = []
-            for(let x = 0; x < this.width; x++) {
+            for (let x = 0; x < this.width; x++) {
                 let row = new Array<Array<string>>();
-                for(let y = 0; y < this.height; y++) {
+                for (let y = 0; y < this.height; y++) {
                     let thingy = new Array<string>();
-                    for(let z = 0; z < depth; z++) {
+                    for (let z = 0; z < depth; z++) {
                         thingy.push(" ");
                     }
                     row.push(thingy);
@@ -57,13 +58,13 @@ export class Renderer {
                 this.tilemap.push(row);
             }
         }
-        
+
         this.width = 0;
         this.height = 0;
         this.depth = depth;
 
         resize()
-        window.addEventListener("resize", () => resize())        
+        window.addEventListener("resize", () => resize())
     }
 
     public clear() {
@@ -86,65 +87,80 @@ export class Renderer {
     }
 
     public fillTiles(xFrom: number, yFrom: number, zFrom: number, xTo: number, yTo: number, zTo: number, char: string) {
-        for(let x = xFrom; x <= xTo; x++)
-            for(let y = yFrom; y <= yTo; y++)
-                for(let z = zFrom; z <= zTo; z++)
+        for (let x = xFrom; x <= xTo; x++)
+            for (let y = yFrom; y <= yTo; y++)
+                for (let z = zFrom; z <= zTo; z++)
                     this.setTile(x, y, z, char);
     }
 
     public fillTilesScreenCoord(xFrom: number, yFrom: number, zFrom: number, xTo: number, yTo: number, zTo: number, char: string) {
-        for(let x = xFrom; x <= xTo; x++)
-            for(let y = yFrom; y <= yTo; y++)
-                for(let z = zFrom; z <= zTo; z++)
+        for (let x = xFrom; x <= xTo; x++)
+            for (let y = yFrom; y <= yTo; y++)
+                for (let z = zFrom; z <= zTo; z++)
                     this.setTileScreenCoord(x, y, z, char);
     }
 
     public writeText(x: number, y: number, z: number, str: string) {
-        for(let i = 0; i < str.length; i++) {
+        for (let i = 0; i < str.length; i++) {
             this.setTile(x + i, y, z, str[i]);
         }
     }
 
     public writeTextScreenCoord(x: number, y: number, z: number, str: string, centered: boolean = false) {
         if (centered) {
-            x -= Math.floor(str.length/2);
+            x -= Math.floor(str.length / 2);
         }
-        for(let i = 0; i < str.length; i++) {
+        for (let i = 0; i < str.length; i++) {
             this.setTileScreenCoord(x + i, y, z, str[i]);
         }
     }
 
     public setTile(x: number, y: number, z: number, char: string) {
-        if(this.inBounds(x, y, z))
+        if (this.inBounds(x, y, z))
             this.tilemap[x - this.cameraPosition.x][y - this.cameraPosition.y][z - this.cameraPosition.z] = char;
     }
 
     public setTileScreenCoord(x: number, y: number, z: number, char: string) {
-        if(this.inScreenBounds(x, y, z))
+        if (this.inScreenBounds(x, y, z))
             this.tilemap[x][y][z] = char;
     }
 
     public getTile(x: number, y: number, z: number) {
-        if(this.inBounds(x, y, z))
+        if (this.inBounds(x, y, z))
             return this.tilemap[x - this.cameraPosition.x][y - this.cameraPosition.y][z - this.cameraPosition.z];
         else
-            return ' ';    
+            return ' ';
     }
 
     public getTileScreenCoord(x: number, y: number, z: number) {
-        if(this.inScreenBounds(x, y, z))
+        if (this.inScreenBounds(x, y, z))
             return this.tilemap[x][y][z];
         else
-            return ' ';    
+            return ' ';
     }
 
     public render() {
         let z = this.cameraPosition.z;
         for (let x = 0; x < this.width; x++)
-            for (let y = 0; y < this.height; y++) {
-                this.context.fillStyle = "#ffffff";
-                this.context.fillText(this.getTileScreenCoord(x, y, z), x * this.tileWidth, this.tileHeight * (y+1));
-            }
+            for (let y = 0; y < this.height; y++)
+                this.drawTile(x, y, z)
+    }
+
+    public drawTile(x: number, y: number, z: number) {
+        const cx = x - this.width / 2
+        const cy = y - this.height / 2
+        const project = (z: number): [number, number] => [
+            (x * this.tileWidth) + cx * (z * this.width * 0.02),
+            (this.tileHeight * (y + 1)) + cy * (z * this.height * 0.02),
+        ]
+
+        this.context.font = `${this.tileHeight}px monospace`
+        const tile = this.getTileScreenCoord(x, y, z)
+        const meta = TileMeta.byTile(tile)
+        this.context.fillStyle = meta.displayColor;
+        for (let i = 0; i < meta.displayHeight; i++) {
+            this.context.fillText(tile, ...project(i));
+        }
     }
 }
 
